@@ -61,7 +61,7 @@ QPalette DarkTheme::colorScheme()
     darkPalette.setColor(QPalette::ButtonText, Qt::white);
     darkPalette.setColor(QPalette::BrightText, Qt::red);
     darkPalette.setColor(QPalette::Link, QColor(190, 190, 190));
-    darkPalette.setColor(QPalette::Highlight, QColor(54, 211, 153));
+    darkPalette.setColor(QPalette::Highlight, QColor(190, 190, 190));
     darkPalette.setColor(QPalette::HighlightedText, QColor(0, 0, 0));
     darkPalette.setColor(QPalette::PlaceholderText, Qt::darkGray);
     return fadeInactive(darkPalette, fadeAmount(), fadeColor());
@@ -99,7 +99,7 @@ QString DarkTheme::appStyleSheet()
         }
         QPushButton:hover, QToolButton:hover, QComboBox:hover, QLineEdit:hover,
         QSpinBox:hover, QDoubleSpinBox:hover {
-            border-color: #36D399;
+            border-color: #bdbdbd;
         }
         QPushButton:pressed, QToolButton:pressed {
             background-color: #242424;
@@ -109,7 +109,7 @@ QString DarkTheme::appStyleSheet()
             background: #505050;
         }
         QScrollBar::handle:hover {
-            background: #36D399;
+            background: #bdbdbd;
         }
     )";
 }
