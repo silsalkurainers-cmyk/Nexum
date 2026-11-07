@@ -260,8 +260,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
     }
 
     // add the toolbar toggles to the view menu
-    ui->viewMenu->addAction(ui->instanceToolBar->toggleViewAction());
-    ui->viewMenu->addAction(ui->newsToolBar->toggleViewAction());
+    ui->instanceToolBar->hide();
+    ui->newsToolBar->hide();
+    ui->actionCAT->setVisible(false);
 
     updateThemeMenu();
     updateMainToolBar();
@@ -331,7 +332,32 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
         view->setSourceOfGroupCollapseStatus(
             [](const QString& groupName) -> bool { return APPLICATION->instances()->isGroupCollapsed(groupName); });
         connect(view, &InstanceView::groupStateChanged, APPLICATION->instances(), &InstanceList::on_GroupStateChanged);
-        ui->horizontalLayout->addWidget(view);
+        auto* instancePanel = new QWidget(ui->centralWidget);
+        auto* instancePanelLayout = new QVBoxLayout(instancePanel);
+        instancePanelLayout->setContentsMargins(8, 8, 8, 8);
+        instancePanelLayout->setSpacing(8);
+        instancePanelLayout->addWidget(view);
+
+        auto* instanceActionsButton = new QToolButton(instancePanel);
+        instanceActionsButton->setText(tr("Instance actions"));
+        instanceActionsButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        instanceActionsButton->setPopupMode(QToolButton::InstantPopup);
+        auto* instanceActionsMenu = new QMenu(instanceActionsButton);
+        instanceActionsMenu->addAction(ui->actionLaunchInstance);
+        instanceActionsMenu->addAction(ui->actionKillInstance);
+        instanceActionsMenu->addSeparator();
+        instanceActionsMenu->addAction(ui->actionEditInstance);
+        instanceActionsMenu->addAction(ui->actionRenameInstance);
+        instanceActionsMenu->addAction(ui->actionChangeInstGroup);
+        instanceActionsMenu->addAction(ui->actionChangeInstIcon);
+        instanceActionsMenu->addAction(ui->actionViewSelectedInstFolder);
+        instanceActionsMenu->addAction(ui->actionExportInstance);
+        instanceActionsMenu->addAction(ui->actionCopyInstance);
+        instanceActionsMenu->addAction(ui->actionDeleteInstance);
+        instanceActionsMenu->addAction(ui->actionCreateInstanceShortcut);
+        instanceActionsButton->setMenu(instanceActionsMenu);
+        instancePanelLayout->addWidget(instanceActionsButton, 0, Qt::AlignLeft);
+        ui->horizontalLayout->addWidget(instancePanel);
     }
     // The cat background
     {
