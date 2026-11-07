@@ -460,7 +460,7 @@
     <iconset theme="launcher"/>
    </property>
    <property name="text">
-    <string>Prism Launcher (zip)</string>
+    <string>Nexum (zip)</string>
    </property>
   </action>
   <action name="actionExportInstanceMrPack">
