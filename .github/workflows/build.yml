@@ -98,6 +98,15 @@ jobs:
         with:
           submodules: true
 
+      # The source import retained .gitmodules but lost the gitlink entries.
+      # Restore both required dependencies explicitly before CMake runs.
+      - name: Restore required source dependencies
+        shell: bash
+        run: |
+          mkdir -p cmake libraries
+          git clone --depth 1 https://github.com/microsoft/vcpkg.git cmake/vcpkg
+          git clone --depth 1 https://github.com/PrismLauncher/libnbtplusplus.git libraries/libnbtplusplus
+
       - name: Setup dependencies
         id: setup-dependencies
         uses: ./.github/actions/setup-dependencies
