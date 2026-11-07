@@ -52,7 +52,6 @@ ThemeManager::ThemeManager()
     m_defaultPalette = QApplication::palette();
 
     initializeThemes();
-    initializeCatPacks();
 }
 
 ThemeManager::~ThemeManager()
