@@ -86,12 +86,12 @@
   </action>
   <action name="actionAddMicrosoft">
    <property name="text">
-    <string>&amp;Add Microsoft</string>
+    <string>Sign in with &amp;Microsoft</string>
    </property>
   </action>
   <action name="actionAddOffline">
    <property name="text">
-    <string>Add &amp;Offline</string>
+    <string>Add local &amp;offline profile</string>
    </property>
   </action>
   <action name="actionRefresh">
