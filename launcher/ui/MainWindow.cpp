@@ -1315,11 +1315,6 @@ void MainWindow::on_actionViewWidgetThemeFolder_triggered()
     DesktopServices::openPath(APPLICATION->themeManager()->getApplicationThemesFolder().path(), true);
 }
 
-void MainWindow::on_actionViewCatPackFolder_triggered()
-{
-    DesktopServices::openPath(APPLICATION->themeManager()->getCatPacksFolder().path(), true);
-}
-
 void MainWindow::on_actionViewIconsFolder_triggered()
 {
     DesktopServices::openPath(APPLICATION->icons()->getDirectory(), true);
