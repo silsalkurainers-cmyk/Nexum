@@ -44,25 +44,25 @@ QString DarkTheme::id()
 
 QString DarkTheme::name()
 {
-    return QObject::tr("Dark");
+    return QObject::tr("Nexum Black");
 }
 
 QPalette DarkTheme::colorScheme()
 {
     QPalette darkPalette;
-    darkPalette.setColor(QPalette::Window, QColor(15, 17, 19));
+    darkPalette.setColor(QPalette::Window, QColor(0, 0, 0));
     darkPalette.setColor(QPalette::WindowText, Qt::white);
-    darkPalette.setColor(QPalette::Base, QColor(9, 11, 13));
-    darkPalette.setColor(QPalette::AlternateBase, QColor(20, 23, 26));
+    darkPalette.setColor(QPalette::Base, QColor(0, 0, 0));
+    darkPalette.setColor(QPalette::AlternateBase, QColor(12, 12, 12));
     darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
     darkPalette.setColor(QPalette::ToolTipText, Qt::white);
     darkPalette.setColor(QPalette::Text, Qt::white);
-    darkPalette.setColor(QPalette::Button, QColor(24, 28, 32));
+    darkPalette.setColor(QPalette::Button, QColor(16, 16, 16));
     darkPalette.setColor(QPalette::ButtonText, Qt::white);
     darkPalette.setColor(QPalette::BrightText, Qt::red);
-    darkPalette.setColor(QPalette::Link, QColor(54, 211, 153));
+    darkPalette.setColor(QPalette::Link, QColor(190, 190, 190));
     darkPalette.setColor(QPalette::Highlight, QColor(54, 211, 153));
-    darkPalette.setColor(QPalette::HighlightedText, QColor(5, 18, 13));
+    darkPalette.setColor(QPalette::HighlightedText, QColor(0, 0, 0));
     darkPalette.setColor(QPalette::PlaceholderText, Qt::darkGray);
     return fadeInactive(darkPalette, fadeAmount(), fadeColor());
 }
@@ -74,7 +74,7 @@ double DarkTheme::fadeAmount()
 
 QColor DarkTheme::fadeColor()
 {
-    return QColor(49, 49, 49);
+    return QColor(32, 32, 32);
 }
 
 bool DarkTheme::hasStyleSheet()
@@ -86,9 +86,9 @@ QString DarkTheme::appStyleSheet()
 {
     return R"(
         QToolTip {
-            color: #e8fff5;
-            background-color: #101816;
-            border: 1px solid #36D399;
+            color: #f0f0f0;
+            background-color: #080808;
+            border: 1px solid #bdbdbd;
             border-radius: 7px;
             padding: 5px;
         }
@@ -102,11 +102,11 @@ QString DarkTheme::appStyleSheet()
             border-color: #36D399;
         }
         QPushButton:pressed, QToolButton:pressed {
-            background-color: #17352b;
+            background-color: #242424;
         }
         QScrollBar::handle {
             border-radius: 5px;
-            background: #3a4642;
+            background: #505050;
         }
         QScrollBar::handle:hover {
             background: #36D399;
