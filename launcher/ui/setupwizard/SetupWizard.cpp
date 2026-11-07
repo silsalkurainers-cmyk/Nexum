@@ -13,10 +13,18 @@
 SetupWizard::SetupWizard(QWidget* parent) : QWizard(parent)
 {
     setObjectName(QStringLiteral("SetupWizard"));
-    resize(820, 740);
-    setMinimumSize(680, 620);
+    resize(1040, 800);
+    setMinimumSize(860, 700);
     setWindowIcon(APPLICATION->logo());
     setWizardStyle(QWizard::ModernStyle);
+    setStyleSheet(QStringLiteral(R"(
+        QWizard, QWizardPage { background: #050505; }
+        QWizardPage QLabel { color: #eeeeee; }
+        QWizard QPushButton { min-width: 92px; min-height: 30px; padding: 5px 12px;
+            border: 1px solid #3b3b3b; border-radius: 8px; background: #151515; color: #f2f2f2; }
+        QWizard QPushButton:hover { border-color: #bdbdbd; background: #202020; }
+        QWizard QPushButton:disabled { color: #777777; border-color: #252525; }
+    )"));
     setOptions(QWizard::NoCancelButton | QWizard::IndependentPages | QWizard::HaveCustomButton1);
 
     retranslate();
