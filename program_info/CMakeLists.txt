@@ -10,7 +10,7 @@ endif()
 
 set(Launcher_CommonName "Nexum")
 set(Launcher_DisplayName "Nexum")
-set(Launcher_AppID "io.github.silsalkurainers-cmyk.Nexum")
+set(Launcher_AppID "io.github.silsalkurainers-cmyk.nexum")
 set(Launcher_Domain "github.com/silsalkurainers-cmyk/Nexum")
 set(Launcher_Git "https://github.com/silsalkurainers-cmyk/Nexum")
 
