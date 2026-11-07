@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseWizardPage.h"
+#include <QFont>
 #include <QLabel>
 #include <QVBoxLayout>
 
