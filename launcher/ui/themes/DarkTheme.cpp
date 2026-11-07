@@ -84,7 +84,34 @@ bool DarkTheme::hasStyleSheet()
 
 QString DarkTheme::appStyleSheet()
 {
-    return "QToolTip { color: #e8fff5; background-color: #101816; border: 1px solid #36D399; border-radius: 6px; padding: 4px; }";
+    return R"(
+        QToolTip {
+            color: #e8fff5;
+            background-color: #101816;
+            border: 1px solid #36D399;
+            border-radius: 7px;
+            padding: 5px;
+        }
+        QPushButton, QToolButton, QComboBox, QLineEdit, QSpinBox, QDoubleSpinBox {
+            border: 1px solid #343b40;
+            border-radius: 7px;
+            padding: 5px 9px;
+        }
+        QPushButton:hover, QToolButton:hover, QComboBox:hover, QLineEdit:hover,
+        QSpinBox:hover, QDoubleSpinBox:hover {
+            border-color: #36D399;
+        }
+        QPushButton:pressed, QToolButton:pressed {
+            background-color: #17352b;
+        }
+        QScrollBar::handle {
+            border-radius: 5px;
+            background: #3a4642;
+        }
+        QScrollBar::handle:hover {
+            background: #36D399;
+        }
+    )";
 }
 
 QString DarkTheme::tooltip()
