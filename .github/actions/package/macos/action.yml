@@ -73,7 +73,6 @@ runs:
         fi
 
         sudo codesign --sign "$APPLE_CODESIGN_ID" --deep --force --entitlements "$ENTITLEMENTS_FILE" --options runtime "Nexum.app/Contents/MacOS/nexum"
-        mv "Nexum.app" "Nexum.app"
 
     - name: Notarize
       shell: bash
