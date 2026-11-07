@@ -73,6 +73,7 @@
 #include "ui/setupwizard/LoginWizardPage.h"
 #include "ui/setupwizard/PasteWizardPage.h"
 #include "ui/setupwizard/SetupWizard.h"
+#include "ui/setupwizard/NexumWelcomeWizardPage.h"
 #include "ui/setupwizard/ThemeWizardPage.h"
 
 #include "ui/dialogs/CustomMessageBox.h"
@@ -1295,6 +1296,7 @@ bool Application::createSetupWizard()
         m_themeManager->applyCurrentlySelectedTheme(true);
 
         SetupWizard setupWizard;
+        setupWizard.addPage(new NexumWelcomeWizardPage(&setupWizard));
         if (languageRequired) {
             setupWizard.addPage(new LanguageWizardPage(&setupWizard));
         }
