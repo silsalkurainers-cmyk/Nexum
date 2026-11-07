@@ -48,7 +48,6 @@
 
 class EditableLabel;
 class LaunchController;
-class NewsChecker;
 class QLabel;
 class QTextEdit;
 class QToolButton;
@@ -145,7 +144,6 @@ class MainWindow : public QMainWindow {
 
     void on_actionMoreNews_triggered();
 
-    void newsButtonClicked();
 
     void on_actionLaunchInstance_triggered();
 
@@ -201,7 +199,6 @@ class MainWindow : public QMainWindow {
 
     void repopulateAccountsMenu();
 
-    void updateNewsLabel();
 
     void konamiTriggered();
 
@@ -240,7 +237,6 @@ class MainWindow : public QMainWindow {
     // these are managed by Qt's memory management model!
     InstanceView* view = nullptr;
     InstanceProxyModel* proxymodel = nullptr;
-    QToolButton* newsLabel = nullptr;
     QLabel* m_statusLeft = nullptr;
     QLabel* m_statusCenter = nullptr;
     QToolButton* m_changeIconButton = nullptr;
@@ -250,7 +246,6 @@ class MainWindow : public QMainWindow {
     QToolButton* helpMenuButton = nullptr;
     KonamiCode* secretEventFilter = nullptr;
 
-    unique_qobject_ptr<NewsChecker> m_newsChecker;
 
     MinecraftInstance* m_selectedInstance = nullptr;
     QString m_currentInstIcon;
