@@ -289,17 +289,10 @@ void ThemeManager::applyCurrentlySelectedTheme(bool initial)
     themeDebugLog() << "<> Application theme set.";
 }
 
-QString ThemeManager::getCatPack(const QString& catName)
+QString ThemeManager::getCatPack([[maybe_unused]] const QString& catName)
 {
-    auto catIter = m_catPacks.find(!catName.isEmpty() ? catName : APPLICATION->settings()->get("BackgroundCat").toString());
-    if (catIter != m_catPacks.end()) {
-        auto& catPack = catIter->second;
-        themeDebugLog() << "applying catpack" << catPack->id();
-        return catPack->path();
-    }
-    themeWarningLog() << "Tried to get invalid catPack:" << catName;
-
-    return m_catPacks.begin()->second->path();
+    // Cat packs are not part of Nexum.
+    return {};
 }
 
 QString ThemeManager::addCatPack(std::unique_ptr<CatPack> catPack)
