@@ -76,6 +76,7 @@ class LogPage : public QWidget, public BasePage {
    private slots:
     void on_btnPaste_clicked();
     void on_btnCopy_clicked();
+    void on_btnSave_clicked();
     void on_btnClear_clicked();
     void on_btnBottom_clicked();
 
