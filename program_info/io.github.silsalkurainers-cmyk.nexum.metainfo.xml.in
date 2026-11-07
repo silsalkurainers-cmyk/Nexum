@@ -3,7 +3,7 @@
   <id>@Launcher_AppID@</id>
   <name>Nexum</name>
   <summary>Custom Minecraft Launcher to easily manage multiple Minecraft installations at once</summary>
-  <developer id="org.nexum.launcher">
+  <developer id="io.github.silsalkurainers-cmyk.nexum">
     <name>Nexum contributors</name>
   </developer>
   <metadata_license>CC0-1.0</metadata_license>
