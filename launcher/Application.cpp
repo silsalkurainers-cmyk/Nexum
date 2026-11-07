@@ -1286,12 +1286,8 @@ bool Application::createSetupWizard()
             settings()->set("IconTheme", defaultIconTheme);
         }
         if (!validWidgets) {
-#if defined(Q_OS_LINUX)
-            const QString style = "system";
-#else
-            const QString style = darkMode ? QStringLiteral("dark") : QStringLiteral("bright");
-
-#endif
+            // Nexum starts with its black theme; users can still choose any installed theme later.
+            const QString style = QStringLiteral("dark");
 
             settings()->set("ApplicationTheme", style);
         }
