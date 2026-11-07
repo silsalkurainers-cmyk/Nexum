@@ -41,6 +41,9 @@
 #include "Application.h"
 
 #include <QIdentityProxyModel>
+#include <QFile>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QScrollBar>
 #include <QShortcut>
 
@@ -233,6 +236,33 @@ bool LogPage::apply()
 bool LogPage::shouldDisplay() const
 {
     return true;
+}
+
+void LogPage::on_btnSave_clicked()
+{
+    if (!m_model) {
+        return;
+    }
+
+    const QString path = QFileDialog::getSaveFileName(
+        this, tr("Save Minecraft Log"), QStringLiteral("nexum-minecraft.log"),
+        tr("Log files (*.log);;Text files (*.txt);;All files (*)"));
+    if (path.isEmpty()) {
+        return;
+    }
+
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, tr("Could not save log"),
+                             tr("Nexum could not write the log file: %1").arg(file.errorString()));
+        return;
+    }
+
+    const QByteArray contents = m_model->toPlainText().toUtf8();
+    if (file.write(contents) != contents.size()) {
+        QMessageBox::warning(this, tr("Could not save log"),
+                             tr("The log file could not be written completely: %1").arg(file.errorString()));
+    }
 }
 
 void LogPage::on_btnPaste_clicked()
