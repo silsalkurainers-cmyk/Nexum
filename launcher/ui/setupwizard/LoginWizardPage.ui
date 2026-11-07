@@ -52,6 +52,16 @@
     </widget>
    </item>
    <item>
+    <widget class="QPushButton" name="offlineButton">
+     <property name="text">
+      <string>Continue with a local offline profile</string>
+     </property>
+     <property name="toolTip">
+      <string>No Microsoft account is required. Offline profiles may not be accepted by online-mode servers.</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
