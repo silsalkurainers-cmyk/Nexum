@@ -49,7 +49,7 @@ configure_file(${Launcher_AppID}.metainfo.xml.in ${Launcher_AppID}.metainfo.xml)
 configure_file(nexum.rc.in ${Launcher_APP_BINARY_NAME}.rc @ONLY)
 configure_file(nexum.qrc.in ${Launcher_APP_BINARY_NAME}.qrc @ONLY)
 configure_file(nexum.manifest.in ${Launcher_APP_BINARY_NAME}.manifest @ONLY)
-configure_file(prismlauncher.ico ${Launcher_APP_BINARY_NAME}.ico COPYONLY)
+configure_file(nexum.ico ${Launcher_APP_BINARY_NAME}.ico COPYONLY)
 configure_file(${Launcher_SVGFileName} ${Launcher_SVGFileName} COPYONLY)
 configure_file(${Launcher_AppID}.mime.xml ${Launcher_AppID}.xml COPYONLY)
 
