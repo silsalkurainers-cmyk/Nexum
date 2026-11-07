@@ -50,19 +50,19 @@ QString DarkTheme::name()
 QPalette DarkTheme::colorScheme()
 {
     QPalette darkPalette;
-    darkPalette.setColor(QPalette::Window, QColor(49, 49, 49));
+    darkPalette.setColor(QPalette::Window, QColor(15, 17, 19));
     darkPalette.setColor(QPalette::WindowText, Qt::white);
-    darkPalette.setColor(QPalette::Base, QColor(34, 34, 34));
-    darkPalette.setColor(QPalette::AlternateBase, QColor(42, 42, 42));
+    darkPalette.setColor(QPalette::Base, QColor(9, 11, 13));
+    darkPalette.setColor(QPalette::AlternateBase, QColor(20, 23, 26));
     darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
     darkPalette.setColor(QPalette::ToolTipText, Qt::white);
     darkPalette.setColor(QPalette::Text, Qt::white);
-    darkPalette.setColor(QPalette::Button, QColor(48, 48, 48));
+    darkPalette.setColor(QPalette::Button, QColor(24, 28, 32));
     darkPalette.setColor(QPalette::ButtonText, Qt::white);
     darkPalette.setColor(QPalette::BrightText, Qt::red);
-    darkPalette.setColor(QPalette::Link, QColor(47, 163, 198));
-    darkPalette.setColor(QPalette::Highlight, QColor(150, 219, 89));
-    darkPalette.setColor(QPalette::HighlightedText, Qt::black);
+    darkPalette.setColor(QPalette::Link, QColor(54, 211, 153));
+    darkPalette.setColor(QPalette::Highlight, QColor(54, 211, 153));
+    darkPalette.setColor(QPalette::HighlightedText, QColor(5, 18, 13));
     darkPalette.setColor(QPalette::PlaceholderText, Qt::darkGray);
     return fadeInactive(darkPalette, fadeAmount(), fadeColor());
 }
@@ -84,7 +84,7 @@ bool DarkTheme::hasStyleSheet()
 
 QString DarkTheme::appStyleSheet()
 {
-    return "QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }";
+    return "QToolTip { color: #e8fff5; background-color: #101816; border: 1px solid #36D399; border-radius: 6px; padding: 4px; }";
 }
 
 QString DarkTheme::tooltip()
