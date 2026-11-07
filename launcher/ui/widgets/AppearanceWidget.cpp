@@ -51,26 +51,25 @@ AppearanceWidget::AppearanceWidget(bool themesOnly, QWidget* parent)
 {
     m_ui->setupUi(this);
 
-    connect(m_ui->enableCatCheckBox, &QCheckBox::toggled, m_ui->catSettingsBox, &QWidget::setEnabled);
-
-    m_ui->catPreview->setGraphicsEffect(new QGraphicsOpacityEffect(this));
+    // Nexum does not expose Prism's legacy cat-pack feature.
+    m_ui->catPackLabel->hide();
+    m_ui->catPackComboBox->hide();
+    m_ui->catPackFolder->hide();
+    m_ui->enableCatCheckBox->hide();
+    m_ui->catSettingsBox->hide();
+    m_ui->catPreview->hide();
 
     m_defaultFormat = QTextCharFormat(m_ui->consolePreview->currentCharFormat());
 
     if (themesOnly) {
-        m_ui->catPackLabel->hide();
-        m_ui->catPackComboBox->hide();
-        m_ui->catPackFolder->hide();
         m_ui->settingsBox->hide();
         m_ui->consolePreview->hide();
-        m_ui->catPreview->hide();
         loadThemeSettings();
     } else {
         loadSettings();
         loadThemeSettings();
 
         updateConsolePreview();
-        updateCatPreview();
     }
 
     connect(m_ui->fontSizeBox, &QSpinBox::valueChanged, this, &AppearanceWidget::updateConsolePreview);
@@ -78,15 +77,11 @@ AppearanceWidget::AppearanceWidget(bool themesOnly, QWidget* parent)
 
     connect(m_ui->iconsComboBox, &QComboBox::currentIndexChanged, this, &AppearanceWidget::applyIconTheme);
     connect(m_ui->widgetStyleComboBox, &QComboBox::currentIndexChanged, this, &AppearanceWidget::applyWidgetTheme);
-    connect(m_ui->catPackComboBox, &QComboBox::currentIndexChanged, this, &AppearanceWidget::applyCatTheme);
-    connect(m_ui->catOpacitySlider, &QAbstractSlider::valueChanged, this, &AppearanceWidget::updateCatPreview);
 
     connect(m_ui->iconsFolder, &QPushButton::clicked, this,
             [] { DesktopServices::openPath(APPLICATION->themeManager()->getIconThemesFolder().path()); });
     connect(m_ui->widgetStyleFolder, &QPushButton::clicked, this,
             [] { DesktopServices::openPath(APPLICATION->themeManager()->getApplicationThemesFolder().path()); });
-    connect(m_ui->catPackFolder, &QPushButton::clicked, this,
-            [] { DesktopServices::openPath(APPLICATION->themeManager()->getCatPacksFolder().path()); });
     connect(m_ui->reloadThemesButton, &QPushButton::pressed, this, &AppearanceWidget::loadThemeSettings);
 }
 
