@@ -95,6 +95,12 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="btnSave">
+       <property name="toolTip"><string>Save the current Minecraft log to a file</string></property>
+       <property name="text"><string>Save...</string></property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="btnPaste">
        <property name="toolTip">
         <string>Upload the log to the paste service configured in preferences</string>
@@ -173,6 +179,7 @@
   <tabstop>wrapCheckbox</tabstop>
   <tabstop>colorCheckbox</tabstop>
   <tabstop>btnCopy</tabstop>
+  <tabstop>btnSave</tabstop>
   <tabstop>btnPaste</tabstop>
   <tabstop>btnClear</tabstop>
   <tabstop>text</tabstop>
