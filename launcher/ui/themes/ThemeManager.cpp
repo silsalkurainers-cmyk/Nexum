@@ -363,5 +363,4 @@ void ThemeManager::refresh()
     m_catPacks.clear();
 
     initializeThemes();
-    initializeCatPacks();
 }
