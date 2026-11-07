@@ -751,17 +751,6 @@
     <string>Open the icon theme folder in a file browser.</string>
    </property>
   </action>
-  <action name="actionViewCatPackFolder">
-   <property name="icon">
-    <iconset theme="viewfolder"/>
-   </property>
-   <property name="text">
-    <string>&amp;Cat Packs</string>
-   </property>
-   <property name="toolTip">
-    <string>Open the cat packs folder in a file browser.</string>
-   </property>
-  </action>
   <action name="actionViewJavaFolder">
    <property name="icon">
     <iconset theme="viewfolder"/>
