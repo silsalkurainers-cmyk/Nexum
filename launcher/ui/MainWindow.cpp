@@ -805,9 +805,10 @@ void MainWindow::onCatToggled(bool state)
     APPLICATION->settings()->set("TheCat", state);
 }
 
-void MainWindow::setCatBackground(bool enabled)
+void MainWindow::setCatBackground([[maybe_unused]] bool enabled)
 {
-    view->setPaintCat(enabled);
+    // The legacy cat background is disabled in Nexum.
+    view->setPaintCat(false);
     view->viewport()->repaint();
 }
 
