@@ -89,7 +89,6 @@
 #include <minecraft/auth/AccountList.h>
 #include <net/ApiRequest.h>
 #include <net/NetJob.h>
-#include <news/NewsChecker.h>
 #include <tools/BaseProfiler.h>
 #include <updater/ExternalUpdater.h>
 #include "InstanceWindow.h"
@@ -103,7 +102,6 @@
 #include "ui/dialogs/IconPickerDialog.h"
 #include "ui/dialogs/ImportResourceDialog.h"
 #include "ui/dialogs/NewInstanceDialog.h"
-#include "ui/dialogs/NewsDialog.h"
 #include "ui/dialogs/ProgressDialog.h"
 #include "ui/dialogs/skins/SkinManageDialog.h"
 #include "ui/instanceview/InstanceDelegate.h"
@@ -291,21 +289,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
         connect(secretEventFilter, &KonamiCode::triggered, this, &MainWindow::konamiTriggered);
     }
 
-    // Add the news label to the news toolbar.
-    {
-        m_newsChecker.reset(new NewsChecker(APPLICATION->network(), BuildConfig.NEWS_RSS_URL));
-        newsLabel = new QToolButton();
-        newsLabel->setIcon(QIcon::fromTheme("news"));
-        newsLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-        newsLabel->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-        newsLabel->setFocusPolicy(Qt::NoFocus);
-        ui->newsToolBar->insertWidget(ui->actionMoreNews, newsLabel);
-
-        connect(newsLabel, &QAbstractButton::clicked, this, &MainWindow::newsButtonClicked);
-        connect(m_newsChecker.get(), &NewsChecker::newsLoaded, this, &MainWindow::updateNewsLabel);
-        updateNewsLabel();
-    }
-
     // Create the instance list widget
     {
         view = new InstanceView(ui->centralWidget);
@@ -426,12 +409,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // TODO: refresh accounts here?
     // auto accounts = APPLICATION->accounts();
-
-    // load the news
-    {
-        m_newsChecker->reloadNews();
-        updateNewsLabel();
-    }
 
     if (APPLICATION->updaterEnabled()) {
         bool updatesAllowed = APPLICATION->updatesAreAllowed();
@@ -820,26 +797,6 @@ bool MainWindow::eventFilter(QObject* obj, QEvent* ev)
         }
     }
     return QMainWindow::eventFilter(obj, ev);
-}
-
-void MainWindow::updateNewsLabel()
-{
-    if (m_newsChecker->isLoadingNews()) {
-        newsLabel->setText(tr("Loading news..."));
-        newsLabel->setEnabled(false);
-        ui->actionMoreNews->setVisible(false);
-    } else {
-        QList<NewsEntryPtr> entries = m_newsChecker->getNewsEntries();
-        if (entries.length() > 0) {
-            newsLabel->setText(entries[0]->title);
-            newsLabel->setEnabled(true);
-            ui->actionMoreNews->setVisible(true);
-        } else {
-            newsLabel->setText(tr("No news available."));
-            newsLabel->setEnabled(false);
-            ui->actionMoreNews->setVisible(false);
-        }
-    }
 }
 
 void MainWindow::onCatToggled(bool state)
@@ -1491,21 +1448,6 @@ void MainWindow::on_actionAddToPATH_triggered()
 void MainWindow::on_actionOpenWiki_triggered()
 {
     DesktopServices::openUrl(QUrl(BuildConfig.WIKI_URL));
-}
-
-void MainWindow::on_actionMoreNews_triggered()
-{
-    auto entries = m_newsChecker->getNewsEntries();
-    NewsDialog news_dialog(entries, this);
-    news_dialog.exec();
-}
-
-void MainWindow::newsButtonClicked()
-{
-    auto entries = m_newsChecker->getNewsEntries();
-    NewsDialog news_dialog(entries, this);
-    news_dialog.toggleArticleList();
-    news_dialog.exec();
 }
 
 void MainWindow::onCatChanged(int)
