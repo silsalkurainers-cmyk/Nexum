@@ -652,7 +652,7 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
         m_settings.reset(new INISettingsObject({ BuildConfig.LAUNCHER_CONFIGFILE, "polymc.cfg", "multimc.cfg" }, this));
 
         // Theming
-        m_settings->registerSetting("IconTheme", QStringLiteral("nexum"));
+        m_settings->registerSetting("IconTheme", QStringLiteral("flat_white"));
         m_settings->registerSetting("NexumModernIconsApplied", false);
         if (!m_settings->get("NexumModernIconsApplied").toBool()) {
             const QString savedIconTheme = m_settings->get("IconTheme").toString();
