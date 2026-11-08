@@ -92,6 +92,7 @@
 #include "tools/BaseProfiler.h"
 
 #include <QActionGroup>
+#include <QDir>
 #include <QMainWindow>
 #include <QScreen>
 #include <QStandardPaths>
@@ -583,6 +584,15 @@ QStringList MinecraftInstance::javaArguments()
 {
     QStringList args;
 
+    // Keep Java and LWJGL temporary extraction on the same drive as the instance.
+    // This is important for portable installs when the system TEMP drive is full.
+    const QString instanceTempPath = QDir(instanceRoot()).filePath("temp");
+    if (QDir().mkpath(instanceTempPath)) {
+        const QString nativeTempPath = QDir::toNativeSeparators(instanceTempPath);
+        args << "-Djava.io.tmpdir=" + nativeTempPath;
+        args << "-Dorg.lwjgl.system.SharedLibraryExtractPath=" + nativeTempPath;
+    }
+
     // custom args go first. we want to override them if we have our own here.
     args.append(extraArguments());
 
@@ -720,8 +730,16 @@ QProcessEnvironment MinecraftInstance::createEnvironment()
 
 QProcessEnvironment MinecraftInstance::createLaunchEnvironment()
 {
-    // prepare the process environment
+    // Keep native-library extraction and other Java temporary files beside the instance.
+    // Do not rely on the user's system TEMP directory, which may be on a full C: drive.
     QProcessEnvironment env = createEnvironment();
+    const QString instanceTempPath = QDir(instanceRoot()).filePath("temp");
+    if (QDir().mkpath(instanceTempPath)) {
+        const QString nativeTempPath = QDir::toNativeSeparators(instanceTempPath);
+        env.insert("TEMP", nativeTempPath);
+        env.insert("TMP", nativeTempPath);
+        env.insert("TMPDIR", nativeTempPath);
+    }
 
 #ifdef Q_OS_LINUX
     if (settings()->get("EnableMangoHud").toBool() && APPLICATION->capabilities() & Application::SupportsMangoHud) {
