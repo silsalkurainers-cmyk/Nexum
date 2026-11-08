@@ -25,6 +25,13 @@ runs:
       with:
         arch: ${{ inputs.vcvars-arch }}
 
+    - name: Install Ninja (MSVC)
+      if: ${{ inputs.msystem == '' }}
+      shell: pwsh
+      run: |
+        choco install ninja --yes --no-progress
+        ninja --version
+
     - name: Setup Java (MSVC)
       uses: actions/setup-java@v6
       with:
