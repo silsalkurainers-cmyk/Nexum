@@ -50,7 +50,7 @@ AppearanceWidget::AppearanceWidget(bool themesOnly, QWidget* parent)
     : QWidget(parent), m_ui(new Ui::AppearanceWidget), m_themesOnly(themesOnly)
 {
     m_ui->setupUi(this);
-    m_ui->iconsComboBox->setIconSize(QSize(24, 24));
+    m_ui->iconsComboBox->setIconSize(QSize(30, 30));
 
     // Nexum does not expose Prism's legacy cat-pack feature.
     m_ui->catPackLabel->hide();
