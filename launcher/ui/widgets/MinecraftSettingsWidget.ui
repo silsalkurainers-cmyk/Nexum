@@ -896,6 +896,36 @@ It is most likely you will need to change the path - please refer to the mod's w
                 </property>
                </widget>
               </item>
+              <item>
+               <widget class="QCheckBox" name="useStringDeduplication">
+                <property name="toolTip">
+                 <string>Let G1 merge identical strings to reduce memory use. Requires G1 garbage collection and may add CPU work.</string>
+                </property>
+                <property name="text">
+                 <string>Enable G1 string deduplication</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="disableExplicitGC">
+                <property name="toolTip">
+                 <string>Ignore explicit System.gc() requests. This can avoid disruptive full collections, but some applications may rely on explicit collection.</string>
+                </property>
+                <property name="text">
+                 <string>Ignore explicit garbage-collection requests</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="alwaysPreTouch">
+                <property name="toolTip">
+                 <string>Touch the full Java heap during startup. This can make memory allocation more predictable, but increases startup time and initial memory commitment.</string>
+                </property>
+                <property name="text">
+                 <string>Pre-touch the Java heap at startup</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -1046,6 +1076,9 @@ It is most likely you will need to change the path - please refer to the mod's w
   <tabstop>useG1GC</tabstop>
   <tabstop>parallelReferenceProcessing</tabstop>
   <tabstop>gcPauseTarget</tabstop>
+  <tabstop>useStringDeduplication</tabstop>
+  <tabstop>disableExplicitGC</tabstop>
+  <tabstop>alwaysPreTouch</tabstop>
  </tabstops>
  <resources/>
  <connections/>
