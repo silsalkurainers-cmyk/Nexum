@@ -260,10 +260,10 @@ void ThemeManager::setIconTheme(const QString& requestedName)
 {
     // Nexum defaults to the modern monochrome icon set. If a saved custom
     // theme has gone missing, fall back rather than leaving actions iconless.
-    QString name = requestedName.isEmpty() ? QStringLiteral("nexum") : requestedName;
+    QString name = requestedName.isEmpty() ? QStringLiteral("flat_white") : requestedName;
     if (!m_icons.contains(name)) {
-        themeWarningLog() << "Tried to set invalid icon theme:" << name << "- falling back to nexum";
-        name = QStringLiteral("nexum");
+        themeWarningLog() << "Tried to set invalid icon theme:" << name << "- falling back to flat_white";
+        name = QStringLiteral("flat_white");
     }
     if (m_icons.contains(name)) {
         QIcon::setThemeName(name);
