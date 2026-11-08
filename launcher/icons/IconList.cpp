@@ -327,7 +327,16 @@ void IconList::installIcon(const QString& file, const QString& name)
         qWarning() << "Installing icon to list -" << target.error();
         return;
     }
-    QFile::copy(file, target.value());
+    const QString targetPath = target.value();
+    if (QFile::exists(targetPath) && !QFile::remove(targetPath)) {
+        qWarning() << "Could not replace existing custom icon:" << targetPath;
+        return;
+    }
+    if (!QFile::copy(file, targetPath)) {
+        qWarning() << "Could not install custom icon:" << file << "to" << targetPath;
+        return;
+    }
+    directoryChanged(m_dir.absolutePath());
 }
 
 bool IconList::iconFileExists(const QString& key) const
