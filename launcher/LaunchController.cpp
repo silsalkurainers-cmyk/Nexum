@@ -208,9 +208,6 @@ QString LaunchController::askOfflineName(const QString& playerName, bool* ok)
         case LaunchMode::Normal:
             Q_ASSERT(false);
             return "";
-        case LaunchMode::Demo:
-            Q_ASSERT(false);
-            return {};
         case LaunchMode::Offline:
             if (!m_accountToUse) {
                 title = tr("Offline account");
