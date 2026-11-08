@@ -125,8 +125,7 @@ void LaunchController::decideAccount()
 
 LaunchDecision LaunchController::decideLaunchMode()
 {
-    if (!m_accountToUse || m_wantedLaunchMode == LaunchMode::Demo ||
-        m_accountToUse->accountType() == AccountType::Offline) {
+    if (!m_accountToUse || m_accountToUse->accountType() == AccountType::Offline) {
         m_actualLaunchMode = LaunchMode::Offline;
         return LaunchDecision::Continue;
     }
@@ -211,10 +210,16 @@ QString LaunchController::askOfflineName(const QString& playerName, bool* ok)
             Q_ASSERT(false);
             return "";
         case LaunchMode::Demo:
-            message = tr("Choose your demo mode player name");
-            break;
+            Q_ASSERT(false);
+            return {};
         case LaunchMode::Offline:
-            if (m_wantedLaunchMode == LaunchMode::Normal) {
+            if (!m_accountToUse) {
+                title = tr("Offline account");
+                message = tr("No Microsoft account is needed for an offline profile.\n\n");
+            } else if (!m_accountToUse->ownsMinecraft()) {
+                title = tr("Offline account");
+                message = tr("This account does not own Minecraft. You can still launch with a local offline profile.\n\n");
+            } else if (m_wantedLaunchMode == LaunchMode::Normal) {
                 auto netErr = m_accountToUse->accountData()->networkError;
                 if (Net::isServerError(netErr)) {
                     title = tr("Auth servers offline");
@@ -372,7 +377,7 @@ void LaunchController::launchInstance()
 
         m_launcher->prependStep(makeShared<PrintServers>(m_launcher, servers));
     } else {
-        online_mode = m_actualLaunchMode == LaunchMode::Demo ? "demo" : "offline";
+        online_mode = "offline";
     }
 
     m_launcher->prependStep(makeShared<TextPrint>(m_launcher, "Launched instance in " + online_mode + " mode\n", MessageLevel::Launcher));
