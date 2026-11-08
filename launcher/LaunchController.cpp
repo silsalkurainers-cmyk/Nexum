@@ -83,6 +83,30 @@ void LaunchController::decideAccount()
         return;
     }
 
+    // Explicit offline launches must never select or refresh a Microsoft account.
+    // Prefer a saved local profile; if none exists, login() creates a one-session
+    // local identity without contacting any authentication service.
+    if (m_wantedLaunchMode == LaunchMode::Offline) {
+        auto* accounts = APPLICATION->accounts();
+        const auto instanceAccountId = m_instance->settings()->get("InstanceAccountId").toString();
+        const auto instanceAccountIndex = accounts->findAccountByProfileId(instanceAccountId);
+        if (instanceAccountIndex >= 0) {
+            const auto candidate = accounts->at(instanceAccountIndex);
+            if (candidate->accountType() == AccountType::Offline) {
+                m_accountToUse = candidate;
+                return;
+            }
+        }
+        for (int i = 0; i < accounts->count(); ++i) {
+            const auto candidate = accounts->at(i);
+            if (candidate->accountType() == AccountType::Offline) {
+                m_accountToUse = candidate;
+                return;
+            }
+        }
+        return;
+    }
+
     // Select the account to use. If the instance has a specific account set, that will be used. Otherwise, the default account will be used
     auto* accounts = APPLICATION->accounts();
     const auto instanceAccountId = m_instance->settings()->get("InstanceAccountId").toString();
@@ -125,7 +149,7 @@ void LaunchController::decideAccount()
 
 LaunchDecision LaunchController::decideLaunchMode()
 {
-    if (!m_accountToUse || m_accountToUse->accountType() == AccountType::Offline) {
+    if (m_wantedLaunchMode == LaunchMode::Offline || !m_accountToUse || m_accountToUse->accountType() == AccountType::Offline) {
         m_actualLaunchMode = LaunchMode::Offline;
         return LaunchDecision::Continue;
     }
