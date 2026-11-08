@@ -125,7 +125,16 @@ jobs:
 
       - name: Configure project
         run: |
-          cmake --preset "$CMAKE_PRESET" -D VCPKG_HOST_TRIPLET="$VCPKG_TRIPLET" -D VCPKG_TARGET_TRIPLET="$VCPKG_TRIPLET"
+          NINJA_PATH="$(command -v ninja)"
+          echo "Using Ninja at: $NINJA_PATH"
+          ninja --version
+          if ! cmake --preset "$CMAKE_PRESET" -D CMAKE_MAKE_PROGRAM="$NINJA_PATH" -D VCPKG_HOST_TRIPLET="$VCPKG_TRIPLET" -D VCPKG_TARGET_TRIPLET="$VCPKG_TRIPLET"; then
+            if [ -f build/vcpkg-bootstrap.log ]; then
+              echo "===== vcpkg bootstrap log ====="
+              cat build/vcpkg-bootstrap.log
+            fi
+            exit 1
+          fi
 
       - name: Run build
         run: |
