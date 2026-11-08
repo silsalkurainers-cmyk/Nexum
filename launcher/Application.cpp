@@ -1287,13 +1287,15 @@ bool Application::createSetupWizard()
     // Show the expanded Nexum setup once to existing installations as well as fresh installs.
     settings()->registerSetting("NexumExpandedWizardShown", false);
     const bool expandedWizardRequired = !settings()->get("NexumExpandedWizardShown").toBool();
+    settings()->registerSetting("NexumAccountWizardShown", false);
+    const bool accountWizardRequired = !settings()->get("NexumAccountWizardShown").toBool();
 
     bool languageRequired = settings()->get("Language").toString().isEmpty();
     bool pasteInterventionRequired = settings()->get("PastebinURL") != "";
     bool validWidgets = m_themeManager->isValidApplicationTheme(settings()->get("ApplicationTheme").toString());
     bool validIcons = m_themeManager->isValidIconTheme(settings()->get("IconTheme").toString());
     bool themeInterventionRequired = !validWidgets || !validIcons;
-    bool wizardRequired = expandedWizardRequired || javaRequired || languageRequired || pasteInterventionRequired || themeInterventionRequired || askjava;
+    bool wizardRequired = expandedWizardRequired || accountWizardRequired || javaRequired || languageRequired || pasteInterventionRequired || themeInterventionRequired || askjava;
     if (wizardRequired) {
         const bool darkMode = QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
         // set default theme after going into theme wizard
@@ -1319,7 +1321,7 @@ bool Application::createSetupWizard()
         SetupWizard setupWizard;
         setupWizard.addPage(new NexumWelcomeWizardPage(&setupWizard));
         setupWizard.addPage(new NexumPerformanceWizardPage(&setupWizard));
-        if (expandedWizardRequired) {
+        if (accountWizardRequired) {
             setupWizard.addPage(new LoginWizardPage(&setupWizard));
         }
         if (languageRequired || expandedWizardRequired) {
@@ -1342,6 +1344,7 @@ bool Application::createSetupWizard()
 
         if (setupWizard.exec() == QDialog::Accepted) {
             settings()->set("NexumExpandedWizardShown", true);
+            settings()->set("NexumAccountWizardShown", true);
         } else {
             qWarning() << "Setup wizard was not completed; continuing with the current settings";
         }
