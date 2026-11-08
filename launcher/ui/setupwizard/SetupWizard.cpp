@@ -13,8 +13,8 @@
 SetupWizard::SetupWizard(QWidget* parent) : QWizard(parent)
 {
     setObjectName(QStringLiteral("SetupWizard"));
-    resize(1040, 800);
-    setMinimumSize(860, 700);
+    resize(1160, 880);
+    setMinimumSize(1000, 760);
     setWindowIcon(APPLICATION->logo());
     setWizardStyle(QWizard::ModernStyle);
     setStyleSheet(QStringLiteral(R"(
