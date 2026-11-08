@@ -1319,6 +1319,9 @@ bool Application::createSetupWizard()
         SetupWizard setupWizard;
         setupWizard.addPage(new NexumWelcomeWizardPage(&setupWizard));
         setupWizard.addPage(new NexumPerformanceWizardPage(&setupWizard));
+        if (expandedWizardRequired) {
+            setupWizard.addPage(new LoginWizardPage(&setupWizard));
+        }
         if (languageRequired || expandedWizardRequired) {
             setupWizard.addPage(new LanguageWizardPage(&setupWizard));
         }
