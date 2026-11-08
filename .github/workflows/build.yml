@@ -135,7 +135,7 @@ jobs:
 
             # vcpkg downloads its bootstrap executable from GitHub Releases.
             # Retry only the known transient gateway failure; surface other errors immediately.
-            if [ -f build/vcpkg-bootstrap.log ] && grep -Eq 'curl: \(22\).*50[234]|HTTP response code said error|HTTP status: 50[234]' build/vcpkg-bootstrap.log; then
+            if [ -f build/vcpkg-bootstrap.log ] && grep -Eq 'curl: \(22\).*50[234]|curl operation failed with response code 50[234]|HTTP response code said error|HTTP status: 50[234]' build/vcpkg-bootstrap.log; then
               echo "vcpkg bootstrap hit a transient HTTP 504 (attempt $attempt/4); retrying..."
               sleep 15
               continue
