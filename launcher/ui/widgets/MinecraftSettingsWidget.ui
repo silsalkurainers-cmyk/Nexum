@@ -866,6 +866,36 @@ It is most likely you will need to change the path - please refer to the mod's w
                 </property>
                </widget>
               </item>
+              <item>
+               <widget class="QCheckBox" name="useG1GC">
+                <property name="toolTip">
+                 <string>Explicitly select the G1 garbage collector. This is already the default on most modern Java versions.</string>
+                </property>
+                <property name="text">
+                 <string>Use G1 garbage collector</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="parallelReferenceProcessing">
+                <property name="toolTip">
+                 <string>Allow Java to process garbage-collector references in parallel.</string>
+                </property>
+                <property name="text">
+                 <string>Parallel reference processing</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="gcPauseTarget">
+                <property name="toolTip">
+                 <string>Ask the G1 garbage collector to target pauses around 100 milliseconds. Actual pauses depend on your system and workload.</string>
+                </property>
+                <property name="text">
+                 <string>Target 100 ms garbage-collection pauses</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -1013,6 +1043,9 @@ It is most likely you will need to change the path - please refer to the mod's w
   <tabstop>enableMangoHud</tabstop>
   <tabstop>useDiscreteGpuCheck</tabstop>
   <tabstop>useZink</tabstop>
+  <tabstop>useG1GC</tabstop>
+  <tabstop>parallelReferenceProcessing</tabstop>
+  <tabstop>gcPauseTarget</tabstop>
  </tabstops>
  <resources/>
  <connections/>
