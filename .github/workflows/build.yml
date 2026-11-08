@@ -19,6 +19,11 @@ on:
       environment:
         description: Deployment environment to run under
         type: string
+      version:
+        description: Nexum version string for release builds
+        type: string
+        required: false
+        default: "0.0.0"
   workflow_dispatch:
     inputs:
       build-type:
@@ -85,6 +90,7 @@ jobs:
       ARTIFACT_NAME: ${{ matrix.artifact-name }}-Qt6
       BUILD_PLATFORM: official
       BUILD_TYPE: ${{ inputs.build-type || 'Debug' }}
+      LAUNCHER_VERSION: ${{ inputs.version || '0.0.0' }}
       CMAKE_PRESET: ci
 
       CMAKE_OSX_ARCHITECTURES: x86_64;arm64
@@ -134,7 +140,7 @@ jobs:
             echo "Using system CMake and Ninja for vcpkg on $RUNNER_OS"
           fi
           for attempt in $(seq 1 10); do
-            if cmake --preset "$CMAKE_PRESET" -D CMAKE_MAKE_PROGRAM="$NINJA_PATH" -D VCPKG_HOST_TRIPLET="$VCPKG_TRIPLET" -D VCPKG_TARGET_TRIPLET="$VCPKG_TRIPLET"; then
+            if cmake --preset "$CMAKE_PRESET" -D CMAKE_MAKE_PROGRAM="$NINJA_PATH" -D VCPKG_HOST_TRIPLET="$VCPKG_TRIPLET" -D VCPKG_TARGET_TRIPLET="$VCPKG_TRIPLET" -D Launcher_VERSION_OVERRIDE="$LAUNCHER_VERSION"; then
               exit 0
             fi
 
