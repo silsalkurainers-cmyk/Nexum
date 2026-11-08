@@ -66,6 +66,7 @@ MinecraftSettingsWidget::MinecraftSettingsWidget(MinecraftInstance* instance, QW
         m_ui->latestMCVersionGroupBox->hide();
         // These three global JVM switches live on the dedicated Performance page.
         // Keep them visible here only for per-instance overrides.
+        m_ui->useG1GC->hide();
         m_ui->useStringDeduplication->hide();
         m_ui->disableExplicitGC->hide();
         m_ui->alwaysPreTouch->hide();
@@ -464,7 +465,9 @@ void MinecraftSettingsWidget::saveSettings()
         settings->set("EnableMangoHud", m_ui->enableMangoHud->isChecked());
         settings->set("UseDiscreteGpu", m_ui->useDiscreteGpuCheck->isChecked());
         settings->set("UseZink", m_ui->useZink->isChecked());
-        settings->set("UseG1GC", m_ui->useG1GC->isChecked());
+        if (m_instance != nullptr) {
+            settings->set("UseG1GC", m_ui->useG1GC->isChecked());
+        }
         settings->set("ParallelReferenceProcessing", m_ui->parallelReferenceProcessing->isChecked());
         settings->set("GcPauseTarget", m_ui->gcPauseTarget->isChecked());
         if (m_instance != nullptr) {
@@ -477,8 +480,10 @@ void MinecraftSettingsWidget::saveSettings()
         settings->reset("EnableMangoHud");
         settings->reset("UseDiscreteGpu");
         settings->reset("UseZink");
-        settings->reset("UseG1GC");
         settings->reset("ParallelReferenceProcessing");
+        if (m_instance != nullptr) {
+            settings->reset("UseG1GC");
+        }
         settings->reset("GcPauseTarget");
         if (m_instance != nullptr) {
             settings->reset("UseStringDeduplication");
