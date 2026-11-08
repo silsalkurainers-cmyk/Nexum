@@ -21,6 +21,8 @@ public:
 
 private:
     QCheckBox* m_g1gc = nullptr;
+    QCheckBox* m_parallelReferenceProcessing = nullptr;
+    QCheckBox* m_gcPauseTarget = nullptr;
     QCheckBox* m_stringDeduplication = nullptr;
     QCheckBox* m_disableExplicitGc = nullptr;
     QCheckBox* m_alwaysPreTouch = nullptr;
