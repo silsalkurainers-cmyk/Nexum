@@ -834,6 +834,7 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
         // Window state and geometry
         m_settings->registerSetting("MainWindowState", "");
         m_settings->registerSetting("MainWindowGeometry", "");
+        m_settings->registerSetting("NexumCompactWindowApplied", false);
 
         m_settings->registerSetting("ConsoleWindowState", "");
         m_settings->registerSetting("ConsoleWindowGeometry", "");
@@ -1722,6 +1723,10 @@ MainWindow* Application::showMainWindow(bool minimized)
         m_mainWindow = new MainWindow();
         m_mainWindow->restoreState(QByteArray::fromBase64(APPLICATION->settings()->get("MainWindowState").toString().toUtf8()));
         m_mainWindow->restoreGeometry(QByteArray::fromBase64(APPLICATION->settings()->get("MainWindowGeometry").toString().toUtf8()));
+        if (!APPLICATION->settings()->get("NexumCompactWindowApplied").toBool()) {
+            m_mainWindow->resize(720, 520);
+            APPLICATION->settings()->set("NexumCompactWindowApplied", true);
+        }
 
         if (minimized) {
             m_mainWindow->showMinimized();
