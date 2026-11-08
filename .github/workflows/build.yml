@@ -128,13 +128,29 @@ jobs:
           NINJA_PATH="$(command -v ninja)"
           echo "Using Ninja at: $NINJA_PATH"
           ninja --version
-          if ! cmake --preset "$CMAKE_PRESET" -D CMAKE_MAKE_PROGRAM="$NINJA_PATH" -D VCPKG_HOST_TRIPLET="$VCPKG_TRIPLET" -D VCPKG_TARGET_TRIPLET="$VCPKG_TRIPLET"; then
+          for attempt in 1 2 3 4; do
+            if cmake --preset "$CMAKE_PRESET" -D CMAKE_MAKE_PROGRAM="$NINJA_PATH" -D VCPKG_HOST_TRIPLET="$VCPKG_TRIPLET" -D VCPKG_TARGET_TRIPLET="$VCPKG_TRIPLET"; then
+              exit 0
+            fi
+
+            # vcpkg downloads its bootstrap executable from GitHub Releases.
+            # Retry only the known transient gateway failure; surface other errors immediately.
+            if [ -f build/vcpkg-bootstrap.log ] && grep -Eq 'curl: \(22\).*504|HTTP response code said error' build/vcpkg-bootstrap.log; then
+              echo "vcpkg bootstrap hit a transient HTTP 504 (attempt $attempt/4); retrying..."
+              sleep 15
+              continue
+            fi
+
             if [ -f build/vcpkg-bootstrap.log ]; then
               echo "===== vcpkg bootstrap log ====="
               cat build/vcpkg-bootstrap.log
             fi
             exit 1
-          fi
+          done
+
+          echo "===== final vcpkg bootstrap log ====="
+          if [ -f build/vcpkg-bootstrap.log ]; then cat build/vcpkg-bootstrap.log; fi
+          exit 1
 
       - name: Run build
         run: |
