@@ -23,14 +23,6 @@ bool AuthSession::MakeOffline(QString offline_playername)
     session = "-";
     access_token = "0";
     player_name = offline_playername;
+    launchMode = LaunchMode::Offline;
     return true;
 }
-
-void AuthSession::MakeDemo(QString name, QString u)
-{
-    uuid = u;
-    session = "-";
-    access_token = "0";
-    player_name = name;
-    launchMode = LaunchMode::Demo;
-};
