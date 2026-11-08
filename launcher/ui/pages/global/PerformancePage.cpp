@@ -21,6 +21,14 @@ PerformancePage::PerformancePage(QWidget* parent) : QWidget(parent)
     m_g1gc->setToolTip(tr("G1 is already the default on most modern Java versions."));
     layout->addWidget(m_g1gc);
 
+    m_parallelReferenceProcessing = new QCheckBox(tr("Enable parallel reference processing"), this);
+    m_parallelReferenceProcessing->setToolTip(tr("Adds -XX:+ParallelRefProcEnabled. The JVM can process references in parallel; results vary by workload."));
+    layout->addWidget(m_parallelReferenceProcessing);
+
+    m_gcPauseTarget = new QCheckBox(tr("Use a 100 ms garbage-collection pause target"), this);
+    m_gcPauseTarget->setToolTip(tr("Adds -XX:MaxGCPauseMillis=100. This is a tuning goal, not a guaranteed pause limit."));
+    layout->addWidget(m_gcPauseTarget);
+
     m_stringDeduplication = new QCheckBox(tr("Enable G1 string deduplication"), this);
     m_stringDeduplication->setToolTip(
         tr("Let G1 merge identical strings to reduce memory use. Requires G1 garbage collection and may add CPU work."));
