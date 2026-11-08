@@ -2,6 +2,13 @@
 <RCC version="1.0">
     <qresource prefix="/icons/nexum">
         <file>index.theme</file>
+        <file>scalable/cat.svg</file>
+        <file>scalable/launcher.svg</file>
+        <file>scalable/discord.svg</file>
+        <file>scalable/matrix.svg</file>
+        <file>scalable/reddit-alien.svg</file>
+        <file>scalable/log.svg</file>
+        <file>scalable/custom-commands.svg</file>
         <file>scalable/about.svg</file>
         <file>scalable/accounts.svg</file>
         <file>scalable/bug.svg</file>
