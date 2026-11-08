@@ -1285,9 +1285,8 @@ bool Application::createSetupWizard()
     bool pasteInterventionRequired = settings()->get("PastebinURL") != "";
     bool validWidgets = m_themeManager->isValidApplicationTheme(settings()->get("ApplicationTheme").toString());
     bool validIcons = m_themeManager->isValidIconTheme(settings()->get("IconTheme").toString());
-    bool login = !m_accounts->anyAccountIsValid() && (capabilities().testAnyFlags(Application::SupportsMSA));
     bool themeInterventionRequired = !validWidgets || !validIcons;
-    bool wizardRequired = javaRequired || languageRequired || pasteInterventionRequired || themeInterventionRequired || askjava || login;
+    bool wizardRequired = javaRequired || languageRequired || pasteInterventionRequired || themeInterventionRequired || askjava;
     if (wizardRequired) {
         const bool darkMode = QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
         // set default theme after going into theme wizard
@@ -1330,9 +1329,6 @@ bool Application::createSetupWizard()
             setupWizard.addPage(new ThemeWizardPage(&setupWizard));
         }
 
-        if (login) {
-            setupWizard.addPage(new LoginWizardPage(&setupWizard));
-        }
         if (setupWizard.exec() != QDialog::Accepted) {
             qWarning() << "Setup wizard was not completed; continuing with the current settings";
         }
