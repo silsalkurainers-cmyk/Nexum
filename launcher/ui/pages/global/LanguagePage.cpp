@@ -40,6 +40,7 @@
 #include "Application.h"
 #include "settings/SettingsObject.h"
 #include "ui/widgets/LanguageSelectionWidget.h"
+#include "translations/TranslationsModel.h"
 
 LanguagePage::LanguagePage(QWidget* parent) : QWidget(parent)
 {
