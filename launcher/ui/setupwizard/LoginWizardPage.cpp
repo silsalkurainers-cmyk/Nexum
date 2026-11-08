@@ -6,6 +6,8 @@
 
 #include "Application.h"
 
+#include <QMessageBox>
+
 LoginWizardPage::LoginWizardPage(QWidget* parent) : BaseWizardPage(parent), ui(new Ui::LoginWizardPage)
 {
     ui->setupUi(this);
