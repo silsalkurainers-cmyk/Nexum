@@ -72,8 +72,10 @@ QString LanguageSelectionWidget::getSelectedLanguageKey() const
 
 void LanguageSelectionWidget::retranslate()
 {
-    QString text = tr("Don't see your language or the quality is poor?<br/><a href=\"%1\">Help us with translations!</a>")
-                       .arg(BuildConfig.TRANSLATIONS_URL);
+    QString text = tr("Available languages are downloaded from the community translation index. If you only see English, press Refresh available languages and try again.")
+                       + QStringLiteral("<br/>")
+                       + tr("Don't see your language or the quality is poor? <a href=\"%1\">Help us with translations!</a>")
+                             .arg(BuildConfig.TRANSLATIONS_URL);
     m_helpUsLabel->setText(text);
     m_formatCheckbox->setText(tr("Use system regional standards"));
     m_refreshButton->setText(tr("Refresh available languages"));
