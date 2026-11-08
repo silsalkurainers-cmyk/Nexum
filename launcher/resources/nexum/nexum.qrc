@@ -1,0 +1,31 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/icons/nexum">
+        <file>index.theme</file>
+        <file>scalable/about.svg</file>
+        <file>scalable/accounts.svg</file>
+        <file>scalable/bug.svg</file>
+        <file>scalable/centralmods.svg</file>
+        <file>scalable/checkupdate.svg</file>
+        <file>scalable/copy.svg</file>
+        <file>scalable/delete.svg</file>
+        <file>scalable/export.svg</file>
+        <file>scalable/flame.svg</file>
+        <file>scalable/help.svg</file>
+        <file>scalable/launch.svg</file>
+        <file>scalable/minecraft.svg</file>
+        <file>scalable/modrinth.svg</file>
+        <file>scalable/new.svg</file>
+        <file>scalable/news.svg</file>
+        <file>scalable/noaccount.svg</file>
+        <file>scalable/refresh.svg</file>
+        <file>scalable/rename.svg</file>
+        <file>scalable/server.svg</file>
+        <file>scalable/settings.svg</file>
+        <file>scalable/shortcut.svg</file>
+        <file>scalable/status-bad.svg</file>
+        <file>scalable/status-good.svg</file>
+        <file>scalable/tag.svg</file>
+        <file>scalable/viewfolder.svg</file>
+    </qresource>
+</RCC>
