@@ -66,8 +66,10 @@ runs:
       run: |
         echo "VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT" >> "$GITHUB_ENV"
 
-    - name: Setup MSYS2 (MinGW)
+    - name: Setup MSYS2 (MinGW, attempt 1)
+      id: msys2_attempt_1
       if: ${{ inputs.msystem != '' }}
+      continue-on-error: true
       uses: msys2/setup-msys2@v2
       with:
         msystem: ${{ inputs.msystem }}
@@ -79,6 +81,43 @@ runs:
           ccache:p
           cmake:p
           ninja:p
+
+    - name: Retry MSYS2 setup (attempt 2)
+      id: msys2_attempt_2
+      if: ${{ inputs.msystem != '' && steps.msys2_attempt_1.outcome != 'success' }}
+      continue-on-error: true
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: ${{ inputs.msystem }}
+        update: true
+        install: >-
+          git
+        pacboy: >-
+          toolchain:p
+          ccache:p
+          cmake:p
+          ninja:p
+
+    - name: Retry MSYS2 setup (attempt 3)
+      id: msys2_attempt_3
+      if: ${{ inputs.msystem != '' && steps.msys2_attempt_1.outcome != 'success' && steps.msys2_attempt_2.outcome != 'success' }}
+      continue-on-error: true
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: ${{ inputs.msystem }}
+        update: true
+        install: >-
+          git
+        pacboy: >-
+          toolchain:p
+          ccache:p
+          cmake:p
+          ninja:p
+
+    - name: Verify MSYS2 setup
+      if: ${{ inputs.msystem != '' && steps.msys2_attempt_1.outcome != 'success' && steps.msys2_attempt_2.outcome != 'success' && steps.msys2_attempt_3.outcome != 'success' }}
+      shell: pwsh
+      run: throw "MSYS2 setup failed after three attempts."
 
     - name: List pacman packages (MinGW)
       if: ${{ inputs.msystem != '' }}
