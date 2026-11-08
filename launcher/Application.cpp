@@ -651,6 +651,14 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
 
         // Theming
         m_settings->registerSetting("IconTheme", QStringLiteral("nexum"));
+        m_settings->registerSetting("NexumModernIconsApplied", false);
+        if (!m_settings->get("NexumModernIconsApplied").toBool()) {
+            const QString savedIconTheme = m_settings->get("IconTheme").toString();
+            if (savedIconTheme.isEmpty() || savedIconTheme == QStringLiteral("pe_dark")) {
+                m_settings->set("IconTheme", QStringLiteral("nexum"));
+            }
+            m_settings->set("NexumModernIconsApplied", true);
+        }
         m_settings->registerSetting("ApplicationTheme", QString());
         m_settings->registerSetting("BackgroundCat", QString("kitteh"));
 
