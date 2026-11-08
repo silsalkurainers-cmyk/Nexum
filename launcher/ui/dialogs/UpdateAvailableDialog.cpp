@@ -39,7 +39,7 @@ UpdateAvailableDialog::UpdateAvailableDialog(const QString& currentVersion,
 
     ui->headerLabel->setText(tr("A new version of %1 is available!").arg(launcherName));
     ui->versionAvailableLabel->setText(
-        tr("Version %1 is now available - you have %2 . Would you like to download it now?").arg(availableVersion).arg(currentVersion));
+        tr("Nexum %1 is available. You are using %2. Choose Install Update when you are ready, or Remind Me Later to decide later.").arg(availableVersion).arg(currentVersion));
     ui->icon->setPixmap(QIcon::fromTheme("checkupdate").pixmap(64));
 
     auto releaseNotesHtml = markdownToHTML(releaseNotes);

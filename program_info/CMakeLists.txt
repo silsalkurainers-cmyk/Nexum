@@ -34,7 +34,30 @@ set(Launcher_MIMEInfo "program_info/${Launcher_AppID}.xml" PARENT_SCOPE)
 set(Launcher_MetaInfo "program_info/${Launcher_AppID}.metainfo.xml" PARENT_SCOPE)
 set(Launcher_PNG_256 "program_info/nexum_256.png" PARENT_SCOPE)
 set(Launcher_SVG "program_info/${Launcher_SVGFileName}" PARENT_SCOPE)
-set(Launcher_Branding_ICNS "program_info/prismlauncher.icns" PARENT_SCOPE)
+if(APPLE)
+    find_program(RSVG_CONVERT_EXECUTABLE rsvg-convert REQUIRED)
+    find_program(ICONUTIL_EXECUTABLE iconutil REQUIRED)
+    set(NEXUM_ICNS_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/nexum.icns")
+    add_custom_command(
+        OUTPUT "${NEXUM_ICNS_OUTPUT}"
+        COMMAND ${CMAKE_COMMAND} -E rm -rf "${CMAKE_CURRENT_BINARY_DIR}/nexum.iconset"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/nexum.iconset"
+        COMMAND ${CMAKE_COMMAND} -E env
+            "RSVG_CONVERT=${RSVG_CONVERT_EXECUTABLE}"
+            "ICONUTIL=${ICONUTIL_EXECUTABLE}"
+            bash "${CMAKE_CURRENT_SOURCE_DIR}/generate_macos_icns.sh"
+            "${CMAKE_CURRENT_SOURCE_DIR}/Nexum.icon/Assets/nexum.svg"
+            "${NEXUM_ICNS_OUTPUT}"
+        DEPENDS
+            "${CMAKE_CURRENT_SOURCE_DIR}/generate_macos_icns.sh"
+            "${CMAKE_CURRENT_SOURCE_DIR}/Nexum.icon/Assets/nexum.svg"
+        VERBATIM
+    )
+    add_custom_target(nexum_macos_icon ALL DEPENDS "${NEXUM_ICNS_OUTPUT}")
+    set(Launcher_Branding_ICNS "${NEXUM_ICNS_OUTPUT}" PARENT_SCOPE)
+else()
+    set(Launcher_Branding_ICNS "" PARENT_SCOPE)
+endif()
 set(Launcher_Branding_MAC_ICON "program_info/Nexum.icon" PARENT_SCOPE)
 set(Launcher_Branding_ICO "program_info/${Launcher_APP_BINARY_NAME}.ico")
 set(Launcher_Branding_ICO "${Launcher_Branding_ICO}" PARENT_SCOPE)

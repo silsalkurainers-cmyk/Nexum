@@ -17,7 +17,7 @@ runs:
         # GitHub-hosted runner downloads occasionally return transient 5xx errors.
         # Retry the complete dependency install; Homebrew safely skips packages already installed.
         for attempt in 1 2 3 4; do
-          if brew install ninja extra-cmake-modules temurin@17 mono; then
+          if brew install ninja extra-cmake-modules temurin@17 mono librsvg; then
             exit 0
           fi
           echo "Homebrew dependency install failed (attempt $attempt/4); retrying..."

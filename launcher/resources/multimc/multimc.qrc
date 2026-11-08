@@ -260,6 +260,34 @@
         <file>scalable/instances/tnt.svg</file>
         <file>scalable/instances/enderman.svg</file>
         <file>scalable/instances/fox.svg</file>
+
+        <!-- Nexum instance icons and additional block collection -->
+        <file>scalable/instances/nexum.svg</file>
+        <file>scalable/instances/nexum_legacy.svg</file>
+        <file>scalable/instances/coal_ore.svg</file>
+        <file>scalable/instances/copper_ore.svg</file>
+        <file>scalable/instances/emerald_ore.svg</file>
+        <file>scalable/instances/lapis_ore.svg</file>
+        <file>scalable/instances/redstone_ore.svg</file>
+        <file>scalable/instances/obsidian.svg</file>
+        <file>scalable/instances/sand.svg</file>
+        <file>scalable/instances/sandstone.svg</file>
+        <file>scalable/instances/netherrack.svg</file>
+        <file>scalable/instances/end_stone.svg</file>
+        <file>scalable/instances/quartz_block.svg</file>
+        <file>scalable/instances/amethyst_block.svg</file>
+        <file>scalable/instances/copper_block.svg</file>
+        <file>scalable/instances/netherite_block.svg</file>
+        <file>scalable/instances/bookshelf.svg</file>
+        <file>scalable/instances/oak_log.svg</file>
+        <file>scalable/instances/oak_leaves.svg</file>
+        <file>scalable/instances/ice.svg</file>
+        <file>scalable/instances/glowstone.svg</file>
+        <file>scalable/instances/moss_block.svg</file>
+        <file>scalable/instances/snow_block.svg</file>
+        <file>scalable/instances/clay.svg</file>
+        <file>scalable/instances/prismarine.svg</file>
+        <file>scalable/instances/dripstone_block.svg</file>
         <file>scalable/instances/bee.svg</file>
 
 
