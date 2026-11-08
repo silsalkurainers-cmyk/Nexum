@@ -82,6 +82,11 @@ runs:
           cmake:p
           ninja:p
 
+    - name: Clean incomplete MSYS2 install before retry 2
+      if: ${{ inputs.msystem != '' && steps.msys2_attempt_1.outcome != 'success' }}
+      shell: pwsh
+      run: Remove-Item -LiteralPath (Join-Path $env:RUNNER_TEMP "msys64") -Recurse -Force -ErrorAction SilentlyContinue
+
     - name: Retry MSYS2 setup (attempt 2)
       id: msys2_attempt_2
       if: ${{ inputs.msystem != '' && steps.msys2_attempt_1.outcome != 'success' }}
@@ -97,6 +102,11 @@ runs:
           ccache:p
           cmake:p
           ninja:p
+
+    - name: Clean incomplete MSYS2 install before retry 3
+      if: ${{ inputs.msystem != '' && steps.msys2_attempt_1.outcome != 'success' && steps.msys2_attempt_2.outcome != 'success' }}
+      shell: pwsh
+      run: Remove-Item -LiteralPath (Join-Path $env:RUNNER_TEMP "msys64") -Recurse -Force -ErrorAction SilentlyContinue
 
     - name: Retry MSYS2 setup (attempt 3)
       id: msys2_attempt_3
