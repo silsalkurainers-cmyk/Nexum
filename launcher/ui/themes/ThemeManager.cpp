@@ -254,14 +254,18 @@ QDir ThemeManager::getCatPacksFolder()
     return m_catPacksFolder;
 }
 
-void ThemeManager::setIconTheme(const QString& name)
+void ThemeManager::setIconTheme(const QString& requestedName)
 {
+    // Nexum defaults to the modern monochrome icon set. If a saved custom
+    // theme has gone missing, fall back rather than leaving actions iconless.
+    QString name = requestedName.isEmpty() ? QStringLiteral("pe_dark") : requestedName;
     if (!m_icons.contains(name)) {
-        themeWarningLog() << "Tried to set invalid icon theme:" << name;
-        return;
+        themeWarningLog() << "Tried to set invalid icon theme:" << name << "- falling back to pe_dark";
+        name = QStringLiteral("pe_dark");
     }
-
-    QIcon::setThemeName(name);
+    if (m_icons.contains(name)) {
+        QIcon::setThemeName(name);
+    }
 }
 
 void ThemeManager::setApplicationTheme(const QString& name, bool initial)
