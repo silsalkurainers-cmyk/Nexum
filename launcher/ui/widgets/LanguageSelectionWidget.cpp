@@ -4,6 +4,7 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QTreeView>
+#include <QPushButton>
 #include <QVBoxLayout>
 #include "Application.h"
 #include "BuildConfig.h"
@@ -17,8 +18,13 @@ LanguageSelectionWidget::LanguageSelectionWidget(QWidget* parent)
     , m_languageView(new QTreeView(this))
     , m_helpUsLabel(new QLabel(this))
     , m_formatCheckbox(new QCheckBox(this))
+    , m_refreshButton(new QPushButton(this))
 {
     m_verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+
+    m_refreshButton->setObjectName(QStringLiteral("refreshLanguagesButton"));
+    m_refreshButton->setToolTip(tr("Download the latest community translation list."));
+    m_verticalLayout->addWidget(m_refreshButton);
 
     m_languageView->setObjectName(QStringLiteral("languageView"));
     m_languageView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -43,6 +49,8 @@ LanguageSelectionWidget::LanguageSelectionWidget(QWidget* parent)
     m_verticalLayout->addWidget(m_formatCheckbox);
 
     auto* translations = APPLICATION->translations();
+    connect(m_refreshButton, &QPushButton::clicked, translations, &TranslationsModel::downloadIndex);
+    translations->downloadIndex();
     auto index = translations->selectedIndex();
     m_languageView->setModel(translations);
     m_languageView->setCurrentIndex(index);
@@ -67,6 +75,7 @@ void LanguageSelectionWidget::retranslate()
                        .arg(BuildConfig.TRANSLATIONS_URL);
     m_helpUsLabel->setText(text);
     m_formatCheckbox->setText(tr("Use system regional standards"));
+    m_refreshButton->setText(tr("Refresh available languages"));
 }
 
 void LanguageSelectionWidget::languageRowChanged(const QModelIndex& current, const QModelIndex& previous)
