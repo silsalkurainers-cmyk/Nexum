@@ -36,6 +36,9 @@ bool LanguageWizardPage::validatePage()
     auto settings = APPLICATION->settings();
     QString key = mainWidget->getSelectedLanguageKey();
     settings->set("Language", key);
+    auto* translations = APPLICATION->translations();
+    translations->selectLanguage(key);
+    translations->updateLanguage(key);
     return true;
 }
 
