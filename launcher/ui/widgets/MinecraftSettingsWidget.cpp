@@ -136,7 +136,12 @@ MinecraftSettingsWidget::MinecraftSettingsWidget(MinecraftInstance* instance, QW
             [this](const bool value) { m_ui->maximizedWarning->setVisible(value && (m_instance == nullptr || !m_instance->isLegacy())); });
 
 #if !defined(Q_OS_LINUX)
-    m_ui->perfomanceGroupBox->hide();
+    // These integrations are Linux-specific; keep the Java GC tuning options
+    // available on every supported desktop platform.
+    m_ui->enableFeralGamemodeCheck->hide();
+    m_ui->enableMangoHud->hide();
+    m_ui->useDiscreteGpuCheck->hide();
+    m_ui->useZink->hide();
 #endif
 
     if (!(APPLICATION->capabilities() & Application::SupportsGameMode)) {
@@ -241,6 +246,9 @@ void MinecraftSettingsWidget::loadSettings()
     m_ui->enableMangoHud->setChecked(settings->get("EnableMangoHud").toBool());
     m_ui->useDiscreteGpuCheck->setChecked(settings->get("UseDiscreteGpu").toBool());
     m_ui->useZink->setChecked(settings->get("UseZink").toBool());
+    m_ui->useG1GC->setChecked(settings->get("UseG1GC").toBool());
+    m_ui->parallelReferenceProcessing->setChecked(settings->get("ParallelReferenceProcessing").toBool());
+    m_ui->gcPauseTarget->setChecked(settings->get("GcPauseTarget").toBool());
 
     if (m_instance != nullptr) {
         // HACK: if we change enable state of child widgets while it's unchecked this creates inconsistency
@@ -446,11 +454,17 @@ void MinecraftSettingsWidget::saveSettings()
         settings->set("EnableMangoHud", m_ui->enableMangoHud->isChecked());
         settings->set("UseDiscreteGpu", m_ui->useDiscreteGpuCheck->isChecked());
         settings->set("UseZink", m_ui->useZink->isChecked());
+        settings->set("UseG1GC", m_ui->useG1GC->isChecked());
+        settings->set("ParallelReferenceProcessing", m_ui->parallelReferenceProcessing->isChecked());
+        settings->set("GcPauseTarget", m_ui->gcPauseTarget->isChecked());
     } else {
         settings->reset("EnableFeralGamemode");
         settings->reset("EnableMangoHud");
         settings->reset("UseDiscreteGpu");
         settings->reset("UseZink");
+        settings->reset("UseG1GC");
+        settings->reset("ParallelReferenceProcessing");
+        settings->reset("GcPauseTarget");
     }
 
     // Game time
