@@ -65,6 +65,8 @@ bool PerformancePage::apply()
 {
     auto* settings = APPLICATION->settings();
     settings->set("UseG1GC", m_g1gc->isChecked());
+    settings->set("ParallelReferenceProcessing", m_parallelReferenceProcessing->isChecked());
+    settings->set("GcPauseTarget", m_gcPauseTarget->isChecked());
     settings->set("UseStringDeduplication", m_stringDeduplication->isChecked());
     settings->set("DisableExplicitGC", m_disableExplicitGc->isChecked());
     settings->set("AlwaysPreTouch", m_alwaysPreTouch->isChecked());
