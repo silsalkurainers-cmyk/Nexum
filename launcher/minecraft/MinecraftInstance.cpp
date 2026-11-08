@@ -1191,10 +1191,11 @@ LaunchTask* MinecraftInstance::createLaunchTask(AuthSessionPtr session, Minecraf
         process->appendStep(step);
     }
 
-    // load meta
+    // Account authentication mode and dependency network mode are independent.
+    // Even a local offline profile needs current Minecraft/Fabric metadata so the
+    // launcher can download missing game libraries and assets when internet is available.
     {
-        auto mode = session->launchMode != LaunchMode::Offline ? Net::Mode::Online : Net::Mode::Offline;
-        process->appendStep(makeShared<TaskStepWrapper>(pptr, makeShared<MinecraftLoadAndCheck>(this, mode)));
+        process->appendStep(makeShared<TaskStepWrapper>(pptr, makeShared<MinecraftLoadAndCheck>(this, Net::Mode::Online)));
     }
 
     // check java
@@ -1212,14 +1213,14 @@ LaunchTask* MinecraftInstance::createLaunchTask(AuthSessionPtr session, Minecraf
         process->appendStep(step);
     }
 
-    // if we aren't in offline mode
+    // Only account claiming depends on authentication mode. Library and asset
+    // downloads must still run for offline profiles; "offline account" does not
+    // mean "disable internet access for installing game files".
     if (session->launchMode != LaunchMode::Offline) {
         process->appendStep(makeShared<ClaimAccount>(pptr, session));
-        for (auto t : createUpdateTask()) {
-            process->appendStep(makeShared<TaskStepWrapper>(pptr, t));
-        }
-    } else {
-        process->appendStep(makeShared<EnsureOfflineLibraries>(pptr, this));
+    }
+    for (auto t : createUpdateTask()) {
+        process->appendStep(makeShared<TaskStepWrapper>(pptr, t));
     }
 
     // if there are any jar mods
