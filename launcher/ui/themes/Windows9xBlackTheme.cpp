@@ -90,6 +90,50 @@ QString Windows9xBlackTheme::appStyleSheet()
         }
         QMenu::item { padding: 5px 22px 5px 8px; }
         QMenu::item:selected { background: #343434; }
+        QHeaderView::section {
+            color: #ffffff;
+            background: #202020;
+            border: 1px solid #777777;
+            padding: 5px;
+        }
+        QCheckBox, QRadioButton { spacing: 7px; color: #eeeeee; }
+        QCheckBox::indicator, QRadioButton::indicator {
+            width: 15px; height: 15px;
+            background: #080808;
+            border: 2px solid #a0a0a0;
+        }
+        QCheckBox::indicator:checked, QRadioButton::indicator:checked {
+            background: #d0d0d0;
+            border-color: #ffffff;
+        }
+        QProgressBar {
+            color: #ffffff;
+            background: #080808;
+            border: 2px solid #888888;
+            text-align: center;
+        }
+        QProgressBar::chunk { background: #bdbdbd; }
+        QScrollBar:vertical, QScrollBar:horizontal {
+            background: #090909;
+            border: 1px solid #666666;
+            width: 14px; height: 14px;
+            margin: 0;
+        }
+        QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+            background: #555555;
+            border: 1px solid #c0c0c0;
+            min-height: 24px; min-width: 24px;
+        }
+        QScrollBar::add-line, QScrollBar::sub-line { background: #222222; }
+        QComboBox QAbstractItemView {
+            color: #ffffff;
+            background: #080808;
+            selection-background-color: #404040;
+            border: 2px solid #888888;
+        }
+        QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, QComboBox:focus {
+            border-color: #eeeeee;
+        }
         QToolTip {
             color: #ffffff;
             background: #080808;
