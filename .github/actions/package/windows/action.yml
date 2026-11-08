@@ -178,6 +178,16 @@ runs:
         exclude-azure-developer-cli-credential: true
         exclude-interactive-browser-credential: true
 
+    # The regular Windows ZIP is also a portable distribution. Create the marker
+    # only after building the installer so installed copies keep their normal AppData behavior.
+    - name: Enable portable data for Windows ZIP
+      shell: pwsh
+      env:
+        INSTALL_DIR: install
+      run: |
+        New-Item -Path "${{ env.INSTALL_DIR }}/UserData" -ItemType Directory -Force | Out-Null
+        New-Item -Path "${{ env.INSTALL_DIR }}/portable.txt" -ItemType File -Force | Out-Null
+
     - name: Upload binary zip
       uses: actions/upload-artifact@v7
       with:
