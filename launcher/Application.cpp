@@ -657,7 +657,7 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
         if (!m_settings->get("NexumModernIconsApplied").toBool()) {
             const QString savedIconTheme = m_settings->get("IconTheme").toString();
             if (savedIconTheme.isEmpty() || savedIconTheme == QStringLiteral("pe_dark")) {
-                m_settings->set("IconTheme", QStringLiteral("nexum"));
+                m_settings->set("IconTheme", QStringLiteral("flat_white"));
             }
             m_settings->set("NexumModernIconsApplied", true);
         }
