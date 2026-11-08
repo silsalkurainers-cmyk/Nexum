@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-only
 #include "Windows9xBlackTheme.h"
 
+#include <QObject>
+
 QString Windows9xBlackTheme::id()
 {
     return QStringLiteral("windows9x-black");
@@ -8,7 +10,7 @@ QString Windows9xBlackTheme::id()
 
 QString Windows9xBlackTheme::name()
 {
-    return tr("Windows 9x Black");
+    return QObject::tr("Windows 9x Black");
 }
 
 QString Windows9xBlackTheme::appStyleSheet()
