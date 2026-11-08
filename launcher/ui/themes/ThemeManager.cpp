@@ -40,11 +40,13 @@ ThemeManager::ThemeManager()
 {
     // Use Nexum's bundled fallback icon set so missing glyphs in a selected theme
     // do not turn toolbar actions and dialogs into empty spaces.
-    QIcon::setFallbackThemeName(QStringLiteral("multimc"));
+    QIcon::setFallbackThemeName(QStringLiteral("pe_dark"));
     auto searchPaths = QIcon::themeSearchPaths();
     searchPaths.removeOne(":/icons");
     searchPaths.prepend(m_iconThemeFolder.path());
     searchPaths.prepend(":/icons");
+    // Keep both modern Nexum vector icons and the legacy raster pack reachable
+    // when a selected/custom theme does not contain a particular glyph.
     QIcon::setThemeSearchPaths(searchPaths);
 
     themeDebugLog() << "Determining System Widget Theme...";
