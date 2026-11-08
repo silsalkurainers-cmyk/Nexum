@@ -14,7 +14,17 @@ runs:
       shell: bash
       run: |
         brew update
-        brew install ninja extra-cmake-modules temurin@17 mono
+        # GitHub-hosted runner downloads occasionally return transient 5xx errors.
+        # Retry the complete dependency install; Homebrew safely skips packages already installed.
+        for attempt in 1 2 3 4; do
+          if brew install ninja extra-cmake-modules temurin@17 mono; then
+            exit 0
+          fi
+          echo "Homebrew dependency install failed (attempt $attempt/4); retrying..."
+          sleep 20
+        done
+        echo "::error::Could not install macOS build dependencies after four attempts."
+        exit 1
 
     - name: Set JAVA_HOME
       shell: bash
