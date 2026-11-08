@@ -235,6 +235,9 @@ void MinecraftInstance::loadSpecificSettings()
         m_settings->registerOverride(global_settings->getSetting("UseG1GC"), performanceOverride);
         m_settings->registerOverride(global_settings->getSetting("ParallelReferenceProcessing"), performanceOverride);
         m_settings->registerOverride(global_settings->getSetting("GcPauseTarget"), performanceOverride);
+        m_settings->registerOverride(global_settings->getSetting("UseStringDeduplication"), performanceOverride);
+        m_settings->registerOverride(global_settings->getSetting("DisableExplicitGC"), performanceOverride);
+        m_settings->registerOverride(global_settings->getSetting("AlwaysPreTouch"), performanceOverride);
 
         // Miscellaneous
         auto miscellaneousOverride = m_settings->registerSetting("OverrideMiscellaneous", false);
@@ -317,14 +320,8 @@ void MinecraftInstance::populateLaunchMenu(QMenu* menu)
     normalLaunch->setShortcut(QKeySequence::Open);
     QAction* normalLaunchOffline = menu->addAction(tr("Launch &Offline"));
     normalLaunchOffline->setShortcut(QKeySequence(tr("Ctrl+Shift+O")));
-    QAction* normalLaunchDemo = menu->addAction(tr("Launch &Demo"));
-    normalLaunchDemo->setShortcut(QKeySequence(tr("Ctrl+Alt+O")));
-
-    normalLaunchDemo->setEnabled(supportsDemo());
-
     connect(normalLaunch, &QAction::triggered, this, [this] { APPLICATION->launch(this); });
     connect(normalLaunchOffline, &QAction::triggered, this, [this] { APPLICATION->launch(this, LaunchMode::Offline); });
-    connect(normalLaunchDemo, &QAction::triggered, this, [this] { APPLICATION->launch(this, LaunchMode::Demo); });
 
     auto accounts = APPLICATION->accounts();
     if (accounts->count() > 1) {
@@ -396,14 +393,6 @@ QString MinecraftInstance::getLocalLibraryPath() const
 {
     QDir libraries_dir(FS::PathCombine(instanceRoot(), "libraries/"));
     return libraries_dir.absolutePath();
-}
-
-bool MinecraftInstance::supportsDemo() const
-{
-    Version instance_ver{ getPackProfile()->getComponentVersion("net.minecraft") };
-    // Demo mode was introduced in 1.3.1: https://minecraft.wiki/w/Demo_mode#History
-    // FIXME: Due to Version constraints atm, this can't handle well non-release versions
-    return instance_ver >= Version("1.3.1");
 }
 
 QString MinecraftInstance::jarModsDir() const
@@ -594,19 +583,24 @@ QStringList MinecraftInstance::javaArguments()
 {
     QStringList args;
 
-    args << "-Duser.language=en";
-
     // custom args go first. we want to override them if we have our own here.
     args.append(extraArguments());
 
     // Optional, cross-platform Java garbage-collection tuning. All options are
     // opt-in so existing instances retain their current JVM behavior.
-    if (settings()->get("UseG1GC").toBool())
+    const bool useG1GC = settings()->get("UseG1GC").toBool();
+    if (useG1GC)
         args << "-XX:+UseG1GC";
     if (settings()->get("ParallelReferenceProcessing").toBool())
         args << "-XX:+ParallelRefProcEnabled";
     if (settings()->get("GcPauseTarget").toBool())
         args << "-XX:MaxGCPauseMillis=100";
+    if (useG1GC && settings()->get("UseStringDeduplication").toBool())
+        args << "-XX:+UseStringDeduplication";
+    if (settings()->get("DisableExplicitGC").toBool())
+        args << "-XX:+DisableExplicitGC";
+    if (settings()->get("AlwaysPreTouch").toBool())
+        args << "-XX:+AlwaysPreTouch";
 
     // OSX dock icon and name
 #ifdef Q_OS_MAC
