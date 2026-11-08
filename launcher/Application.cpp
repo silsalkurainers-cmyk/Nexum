@@ -1319,7 +1319,7 @@ bool Application::createSetupWizard()
         SetupWizard setupWizard;
         setupWizard.addPage(new NexumWelcomeWizardPage(&setupWizard));
         setupWizard.addPage(new NexumPerformanceWizardPage(&setupWizard));
-        if (languageRequired) {
+        if (languageRequired || expandedWizardRequired) {
             setupWizard.addPage(new LanguageWizardPage(&setupWizard));
         }
 
@@ -1333,7 +1333,7 @@ bool Application::createSetupWizard()
             setupWizard.addPage(new PasteWizardPage(&setupWizard));
         }
 
-        if (themeInterventionRequired) {
+        if (themeInterventionRequired || expandedWizardRequired) {
             setupWizard.addPage(new ThemeWizardPage(&setupWizard));
         }
 
