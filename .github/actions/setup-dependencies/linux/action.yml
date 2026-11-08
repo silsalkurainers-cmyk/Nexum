@@ -13,6 +13,8 @@ runs:
           dpkg-dev \
           ninja-build extra-cmake-modules pkg-config scdoc \
           gamemode-dev libxcb-cursor-dev
+        command -v ninja
+        ninja --version
 
     - name: Setup AppImage tooling
       shell: bash
