@@ -93,21 +93,16 @@ void LaunchController::decideAccount()
         m_accountToUse = accounts->at(instanceAccountIndex);
     }
 
-    if (!accounts->anyAccountIsValid()) {
-        // Tell the user they need to log in at least one account in order to play.
-        auto reply = CustomMessageBox::selectable(m_parentWidget, tr("No Accounts"),
-                                                  tr("In order to play Minecraft, you must have at least one Microsoft "
-                                                     "account which owns Minecraft logged in. "
-                                                     "Would you like to open the account manager to add an account now?"),
-                                                  QMessageBox::Information, QMessageBox::Yes | QMessageBox::No)
-                         ->exec();
-
-        if (reply == QMessageBox::Yes) {
-            // Open the account manager.
-            APPLICATION->ShowGlobalSettings(m_parentWidget, "accounts");
-        } else if (reply == QMessageBox::No) {
-            // Do not open "profile select" dialog.
-            return;
+    // Offline accounts are standalone identities and must never be gated by
+    // Microsoft account ownership. If there is no default account, prefer a
+    // saved offline account before asking the user to choose a licensed one.
+    if (!m_accountToUse) {
+        for (int i = 0; i < accounts->count(); ++i) {
+            const auto candidate = accounts->at(i);
+            if (candidate->accountType() == AccountType::Offline) {
+                m_accountToUse = candidate;
+                break;
+            }
         }
     }
 
@@ -130,8 +125,9 @@ void LaunchController::decideAccount()
 
 LaunchDecision LaunchController::decideLaunchMode()
 {
-    if (!m_accountToUse || m_wantedLaunchMode == LaunchMode::Demo) {
-        m_actualLaunchMode = LaunchMode::Demo;
+    if (!m_accountToUse || m_wantedLaunchMode == LaunchMode::Demo ||
+        m_accountToUse->accountType() == AccountType::Offline) {
+        m_actualLaunchMode = LaunchMode::Offline;
         return LaunchDecision::Continue;
     }
 
@@ -140,19 +136,12 @@ LaunchDecision LaunchController::decideLaunchMode()
 
     if (m_accountToUse->accountType() != AccountType::Offline) {
         accountToCheck = m_accountToUse->ownsMinecraft() ? m_accountToUse : nullptr;
-    } else if (const auto defaultAccount = accounts->defaultAccount(); defaultAccount && defaultAccount->ownsMinecraft()) {
-        accountToCheck = defaultAccount;
-    } else {
-        for (int i = 0; i < accounts->count(); i++) {
-            if (const auto account = accounts->at(i); account->ownsMinecraft()) {
-                accountToCheck = account;
-                break;
-            }
-        }
     }
 
     if (!accountToCheck) {
-        m_actualLaunchMode = LaunchMode::Demo;
+        // A Microsoft account without a Minecraft license may still be used
+        // as an offline profile. Do not route the user into demo mode.
+        m_actualLaunchMode = LaunchMode::Offline;
         return LaunchDecision::Continue;
     }
 
@@ -207,24 +196,6 @@ LaunchDecision LaunchController::decideLaunchMode()
     }
 
     return LaunchDecision::Abort;
-}
-
-bool LaunchController::askPlayDemo() const
-{
-    QMessageBox box(m_parentWidget);
-    box.setWindowTitle(tr("Play demo?"));
-    QString text = m_accountToUse
-                       ? tr("This account does not own Minecraft.\nYou need to purchase the game first to play the full version.")
-                       : tr("No account was selected for launch.");
-    text += tr("\n\nDo you want to play the demo?");
-    box.setText(text);
-    box.setIcon(QMessageBox::Warning);
-    const auto* demoButton = box.addButton(tr("Play Demo"), QMessageBox::ButtonRole::YesRole);
-    auto* cancelButton = box.addButton(tr("Cancel"), QMessageBox::ButtonRole::NoRole);
-    box.setDefaultButton(cancelButton);
-
-    box.exec();
-    return box.clickedButton() == demoButton;
 }
 
 QString LaunchController::askOfflineName(const QString& playerName, bool* ok)
@@ -289,19 +260,18 @@ void LaunchController::login()
         return;
     }
 
-    if (m_actualLaunchMode == LaunchMode::Demo) {
-        if (m_wantedLaunchMode == LaunchMode::Demo || askPlayDemo()) {
-            bool ok = false;
-            auto name = askOfflineName("Player", &ok);
-            if (ok) {
-                m_session = std::make_shared<AuthSession>();
-                m_session->MakeDemo(name, MinecraftAccount::uuidFromUsername(name).toString(QUuid::Id128));
-                launchInstance();
-                return;
-            }
+    // With no account selected, create a one-session offline identity.
+    // This does not create, require, or contact a Microsoft account.
+    if (!m_accountToUse) {
+        bool ok = false;
+        const auto name = askOfflineName(QStringLiteral("Player"), &ok);
+        if (!ok) {
+            emitAborted();
+            return;
         }
-
-        emitFailed(tr("No account selected for launch"));
+        m_session = std::make_shared<AuthSession>();
+        m_session->MakeOffline(name);
+        launchInstance();
         return;
     }
 
@@ -311,14 +281,13 @@ void LaunchController::login()
 
     if (m_accountToUse->accountType() != AccountType::Offline) {
         if (m_actualLaunchMode == LaunchMode::Normal && !m_accountToUse->hasProfile()) {
-            // Now handle setting up a profile name here...
             if (ProfileSetupDialog dialog(m_accountToUse, m_parentWidget); dialog.exec() != QDialog::Accepted) {
                 emitAborted();
                 return;
             }
         }
 
-        if (m_actualLaunchMode == LaunchMode::Offline && m_accountToUse->accountType() != AccountType::Offline) {
+        if (m_actualLaunchMode == LaunchMode::Offline) {
             bool ok = false;
             QString name = m_offlineName;
             if (name.isEmpty()) {
