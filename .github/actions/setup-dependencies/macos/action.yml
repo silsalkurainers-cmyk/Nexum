@@ -17,7 +17,7 @@ runs:
         # GitHub-hosted runner downloads occasionally return transient 5xx errors.
         # Retry the complete dependency install; Homebrew safely skips packages already installed.
         for attempt in 1 2 3 4; do
-          if brew install ninja extra-cmake-modules temurin@17 mono python@3.14; then
+          if brew install ninja extra-cmake-modules temurin@17 mono; then
             exit 0
           fi
           echo "Homebrew dependency install failed (attempt $attempt/4); retrying..."
@@ -25,13 +25,6 @@ runs:
         done
         echo "::error::Could not install macOS build dependencies after four attempts."
         exit 1
-
-    - name: Add Homebrew Python to PATH
-      shell: bash
-      run: |
-        echo "$(brew --prefix python@3.14)/bin" >> "$GITHUB_PATH"
-        echo "$(brew --prefix python@3.14)/libexec/bin" >> "$GITHUB_PATH"
-        python3 --version
 
     - name: Set JAVA_HOME
       shell: bash
