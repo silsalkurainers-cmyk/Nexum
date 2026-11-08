@@ -23,6 +23,7 @@ LanguageSelectionWidget::LanguageSelectionWidget(QWidget* parent)
     m_verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
 
     m_refreshButton->setObjectName(QStringLiteral("refreshLanguagesButton"));
+    m_refreshButton->setText(tr("Refresh available languages"));
     m_refreshButton->setToolTip(tr("Download the latest community translation list."));
     m_verticalLayout->addWidget(m_refreshButton);
 
