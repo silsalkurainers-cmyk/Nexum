@@ -1,0 +1,11 @@
+[Icon Theme]
+Name=Nexum Modern
+Comment=Original monochrome outline icons for Nexum
+Inherits=multimc
+Directories=scalable
+
+[scalable]
+Size=24
+Type=Scalable
+MinSize=16
+MaxSize=256
