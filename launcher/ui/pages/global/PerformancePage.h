@@ -3,6 +3,7 @@
 #include "ui/pages/BasePage.h"
 
 #include <QCheckBox>
+#include <QIcon>
 #include <QWidget>
 
 class PerformancePage final : public QWidget, public BasePage {
