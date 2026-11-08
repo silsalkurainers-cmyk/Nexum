@@ -172,7 +172,6 @@
     </property>
     <addaction name="actionChangeTheme"/>
     <addaction name="separator"/>
-    <addaction name="actionToggleStatusBar"/>
     <addaction name="actionLockToolbars"/>
     <addaction name="separator"/>
    </widget>
@@ -294,10 +293,10 @@
     <iconset theme="checkupdate"/>
    </property>
    <property name="text">
-    <string>&amp;Update...</string>
+    <string>&amp;Update Nexum...</string>
    </property>
    <property name="toolTip">
-    <string>Check for new updates for %1.</string>
+    <string>Check GitHub for a newer Nexum release.</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::ApplicationSpecificRole</enum>
