@@ -584,6 +584,9 @@ QStringList MinecraftInstance::javaArguments()
 {
     QStringList args;
 
+    // custom args go first. we want to override them if we have our own here.
+    args.append(extraArguments());
+
     // Keep Java and LWJGL temporary extraction on the same drive as the instance.
     // This is important for portable installs when the system TEMP drive is full.
     const QString instanceTempPath = QDir(instanceRoot()).filePath("temp");
@@ -592,9 +595,6 @@ QStringList MinecraftInstance::javaArguments()
         args << "-Djava.io.tmpdir=" + nativeTempPath;
         args << "-Dorg.lwjgl.system.SharedLibraryExtractPath=" + nativeTempPath;
     }
-
-    // custom args go first. we want to override them if we have our own here.
-    args.append(extraArguments());
 
     // Optional, cross-platform Java garbage-collection tuning. All options are
     // opt-in so existing instances retain their current JVM behavior.
