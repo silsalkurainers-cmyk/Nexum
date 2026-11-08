@@ -17,6 +17,10 @@ PerformancePage::PerformancePage(QWidget* parent) : QWidget(parent)
     description->setWordWrap(true);
     layout->addWidget(description);
 
+    m_g1gc = new QCheckBox(tr("Use the G1 garbage collector"), this);
+    m_g1gc->setToolTip(tr("G1 is already the default on most modern Java versions."));
+    layout->addWidget(m_g1gc);
+
     m_stringDeduplication = new QCheckBox(tr("Enable G1 string deduplication"), this);
     m_stringDeduplication->setToolTip(
         tr("Let G1 merge identical strings to reduce memory use. Requires G1 garbage collection and may add CPU work."));
@@ -35,14 +39,12 @@ PerformancePage::PerformancePage(QWidget* parent) : QWidget(parent)
     layout->addStretch(1);
 
     auto* settings = APPLICATION->settings();
+    m_g1gc->setChecked(settings->get("UseG1GC").toBool());
     m_stringDeduplication->setChecked(settings->get("UseStringDeduplication").toBool());
     m_disableExplicitGc->setChecked(settings->get("DisableExplicitGC").toBool());
     m_alwaysPreTouch->setChecked(settings->get("AlwaysPreTouch").toBool());
-    m_stringDeduplication->setEnabled(settings->get("UseG1GC").toBool());
-    auto g1gcSetting = settings->getSetting("UseG1GC");
-    connect(g1gcSetting.get(), &Setting::SettingChanged, this, [this](const Setting&, const QVariant& value) {
-        m_stringDeduplication->setEnabled(value.toBool());
-    });
+    m_stringDeduplication->setEnabled(m_g1gc->isChecked());
+    connect(m_g1gc, &QCheckBox::toggled, m_stringDeduplication, &QWidget::setEnabled);
 }
 
 void PerformancePage::retranslate()
@@ -52,6 +54,7 @@ void PerformancePage::retranslate()
 bool PerformancePage::apply()
 {
     auto* settings = APPLICATION->settings();
+    settings->set("UseG1GC", m_g1gc->isChecked());
     settings->set("UseStringDeduplication", m_stringDeduplication->isChecked());
     settings->set("DisableExplicitGC", m_disableExplicitGc->isChecked());
     settings->set("AlwaysPreTouch", m_alwaysPreTouch->isChecked());
