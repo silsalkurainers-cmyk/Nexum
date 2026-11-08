@@ -786,6 +786,9 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
         m_settings->registerSetting("UseG1GC", false);
         m_settings->registerSetting("ParallelReferenceProcessing", false);
         m_settings->registerSetting("GcPauseTarget", false);
+        m_settings->registerSetting("UseStringDeduplication", false);
+        m_settings->registerSetting("DisableExplicitGC", false);
+        m_settings->registerSetting("AlwaysPreTouch", false);
 
         // Game time
         m_settings->registerSetting("ShowGameTime", true);
