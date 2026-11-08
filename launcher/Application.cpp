@@ -783,6 +783,9 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
         m_settings->registerSetting("EnableMangoHud", false);
         m_settings->registerSetting("UseDiscreteGpu", false);
         m_settings->registerSetting("UseZink", false);
+        m_settings->registerSetting("UseG1GC", false);
+        m_settings->registerSetting("ParallelReferenceProcessing", false);
+        m_settings->registerSetting("GcPauseTarget", false);
 
         // Game time
         m_settings->registerSetting("ShowGameTime", true);
