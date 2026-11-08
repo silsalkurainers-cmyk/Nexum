@@ -197,7 +197,8 @@ void IconList::fileChanged(const QString& path)
     QFileInfo checkfile(path);
     if (!checkfile.exists())
         return;
-    QString key = m_dir.relativeFilePath(checkfile.absoluteFilePath());
+    const QString relativePath = m_dir.relativeFilePath(checkfile.absoluteFilePath());
+    const QString key = QFileInfo(relativePath).completeBaseName();
     int idx = getIconIndex(key);
     if (idx == -1)
         return;
