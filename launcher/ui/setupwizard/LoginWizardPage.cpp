@@ -60,6 +60,10 @@ void LoginWizardPage::on_offlineButton_clicked()
     if (const MinecraftAccountPtr account = MinecraftAccount::createOffline(dialog.getUsername())) {
         APPLICATION->accounts()->addAccount(account);
         APPLICATION->accounts()->setDefaultAccount(account);
+        if (!APPLICATION->accounts()->saveList()) {
+            QMessageBox::warning(wizard(), tr("Account not saved"),
+                                 tr("The local profile was added for this session, but Nexum could not save accounts.json. Check that the Nexum data folder is writable."));
+        }
 
         if (wizard()->currentId() == wizard()->pageIds().last()) {
             wizard()->accept();
