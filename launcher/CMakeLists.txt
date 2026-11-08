@@ -1196,6 +1196,7 @@ qt_add_resources(LAUNCHER_RESOURCES
     resources/backgrounds/backgrounds.qrc
     resources/multimc/multimc.qrc
     resources/pe_dark/pe_dark.qrc
+    resources/nexum/nexum.qrc
     resources/pe_light/pe_light.qrc
     resources/pe_colored/pe_colored.qrc
     resources/pe_blue/pe_blue.qrc
