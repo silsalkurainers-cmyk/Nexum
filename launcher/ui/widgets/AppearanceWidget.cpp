@@ -193,7 +193,7 @@ void AppearanceWidget::loadThemeSettings()
         QIcon iconForComboBox(theme->path() + "/scalable/settings.svg");
         if (iconForComboBox.isNull()) {
             iconForComboBox = QIcon::fromTheme(QStringLiteral("settings"),
-                                               QIcon(QStringLiteral(":/icons/multimc/scalable/settings.svg")));
+                                               QIcon(QStringLiteral(":/icons/multimc/16x16/settings.png")));
         }
         m_ui->iconsComboBox->addItem(iconForComboBox, theme->name(), theme->id());
 
