@@ -341,6 +341,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
         instanceActionsMenu->addAction(ui->actionCreateInstanceShortcut);
         instanceActionsButton->setMenu(instanceActionsMenu);
         instancePanelLayout->addWidget(instanceActionsButton, 0, Qt::AlignLeft);
+        auto* creditLabel = new QLabel(tr("Made by hacer62828"), instancePanel);
+        creditLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        creditLabel->setStyleSheet("color: palette(mid); font-size: 10px; padding: 2px 4px;");
+        instancePanelLayout->addWidget(creditLabel);
         ui->horizontalLayout->addWidget(instancePanel);
     }
     // The cat background
@@ -352,13 +356,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
         connect(APPLICATION, &Application::currentCatChanged, this, &MainWindow::onCatChanged);
     }
 
-    // Togglable status bar
-    {
-        bool statusBarVisible = APPLICATION->settings()->get("StatusBarVisible").toBool();
-        ui->actionToggleStatusBar->setChecked(statusBarVisible);
-        connect(ui->actionToggleStatusBar, &QAction::toggled, this, &MainWindow::setStatusBarVisibility);
-        setStatusBarVisibility(statusBarVisible);
-    }
+    // Nexum keeps the old status bar hidden; instance information lives in the main interface.
+    statusBar()->hide();
+    ui->actionToggleStatusBar->setVisible(false);
 
     // Lock toolbars
     {
@@ -484,15 +484,14 @@ QMenu* MainWindow::createPopupMenu()
     QMenu* filteredMenu = QMainWindow::createPopupMenu();
     filteredMenu->removeAction(ui->mainToolBar->toggleViewAction());
 
-    filteredMenu->addAction(ui->actionToggleStatusBar);
     filteredMenu->addAction(ui->actionLockToolbars);
 
     return filteredMenu;
 }
 void MainWindow::setStatusBarVisibility(bool state)
 {
-    statusBar()->setVisible(state);
-    APPLICATION->settings()->set("StatusBarVisible", state);
+    Q_UNUSED(state);
+    statusBar()->hide();
 }
 void MainWindow::lockToolbars(bool state)
 {
