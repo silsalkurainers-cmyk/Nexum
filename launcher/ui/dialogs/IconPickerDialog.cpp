@@ -216,10 +216,14 @@ void IconPickerDialog::addNewIcon()
     }
 
     auto key = QFileInfo(fileNames.first()).completeBaseName();
-    connect(
-        list, &IconList::iconUpdated, this,
-        [this, list, key] { ui->iconView->setCurrentIndex(proxyModel->mapFromSource(list->index(list->getIconIndex(key)))); },
-        static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::SingleShotConnection));
+    const int iconIndex = list->getIconIndex(key);
+    if (iconIndex >= 0) {
+        const auto proxyIndex = proxyModel->mapFromSource(list->index(iconIndex));
+        if (proxyIndex.isValid()) {
+            ui->iconView->setCurrentIndex(proxyIndex);
+            ui->iconView->scrollTo(proxyIndex);
+        }
+    }
 }
 
 void IconPickerDialog::removeSelectedIcon()
