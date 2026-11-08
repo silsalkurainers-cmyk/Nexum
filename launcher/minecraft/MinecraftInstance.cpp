@@ -810,9 +810,6 @@ QStringList MinecraftInstance::processMinecraftArgs(AuthSessionPtr session, Mine
         tokenMapping["user_properties"] = session->serializeUserProperties();
         tokenMapping["user_type"] = session->user_type;
 
-        if (session->launchMode == LaunchMode::Demo) {
-            args << "--demo";
-        }
     }
 
     for (int i = 0; i < args.length(); i++) {
