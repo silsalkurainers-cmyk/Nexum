@@ -232,6 +232,9 @@ void MinecraftInstance::loadSpecificSettings()
         m_settings->registerOverride(global_settings->getSetting("EnableMangoHud"), performanceOverride);
         m_settings->registerOverride(global_settings->getSetting("UseDiscreteGpu"), performanceOverride);
         m_settings->registerOverride(global_settings->getSetting("UseZink"), performanceOverride);
+        m_settings->registerOverride(global_settings->getSetting("UseG1GC"), performanceOverride);
+        m_settings->registerOverride(global_settings->getSetting("ParallelReferenceProcessing"), performanceOverride);
+        m_settings->registerOverride(global_settings->getSetting("GcPauseTarget"), performanceOverride);
 
         // Miscellaneous
         auto miscellaneousOverride = m_settings->registerSetting("OverrideMiscellaneous", false);
@@ -595,6 +598,15 @@ QStringList MinecraftInstance::javaArguments()
 
     // custom args go first. we want to override them if we have our own here.
     args.append(extraArguments());
+
+    // Optional, cross-platform Java garbage-collection tuning. All options are
+    // opt-in so existing instances retain their current JVM behavior.
+    if (settings()->get("UseG1GC").toBool())
+        args << "-XX:+UseG1GC";
+    if (settings()->get("ParallelReferenceProcessing").toBool())
+        args << "-XX:+ParallelRefProcEnabled";
+    if (settings()->get("GcPauseTarget").toBool())
+        args << "-XX:MaxGCPauseMillis=100";
 
     // OSX dock icon and name
 #ifdef Q_OS_MAC
