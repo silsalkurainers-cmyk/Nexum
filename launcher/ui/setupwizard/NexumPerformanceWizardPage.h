@@ -30,6 +30,16 @@ public:
         m_g1gc->setChecked(settings->get("UseG1GC").toBool());
         layout->addWidget(m_g1gc);
 
+        m_parallelReferenceProcessing = new QCheckBox(tr("Enable parallel reference processing"), this);
+        m_parallelReferenceProcessing->setToolTip(tr("Lets the JVM process references in parallel; results vary by workload."));
+        m_parallelReferenceProcessing->setChecked(settings->get("ParallelReferenceProcessing").toBool());
+        layout->addWidget(m_parallelReferenceProcessing);
+
+        m_gcPauseTarget = new QCheckBox(tr("Use a 100 ms garbage-collection pause target"), this);
+        m_gcPauseTarget->setToolTip(tr("A tuning goal, not a guaranteed pause limit."));
+        m_gcPauseTarget->setChecked(settings->get("GcPauseTarget").toBool());
+        layout->addWidget(m_gcPauseTarget);
+
         m_stringDeduplication = new QCheckBox(tr("Enable G1 string deduplication"), this);
         m_stringDeduplication->setToolTip(tr("Can reduce memory use by merging identical strings, with some extra CPU work."));
         m_stringDeduplication->setChecked(settings->get("UseStringDeduplication").toBool());
