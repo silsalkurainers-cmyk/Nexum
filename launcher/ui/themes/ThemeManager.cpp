@@ -37,7 +37,9 @@
 
 ThemeManager::ThemeManager()
 {
-    QIcon::setFallbackThemeName(QIcon::themeName());
+    // Use Nexum's bundled fallback icon set so missing glyphs in a selected theme
+    // do not turn toolbar actions and dialogs into empty spaces.
+    QIcon::setFallbackThemeName(QStringLiteral("multimc"));
     auto searchPaths = QIcon::themeSearchPaths();
     searchPaths.removeOne(":/icons");
     searchPaths.prepend(m_iconThemeFolder.path());
