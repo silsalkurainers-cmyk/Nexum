@@ -54,7 +54,9 @@ runs:
 
     # TODO(@getchoo): Get this working on MSYS2!
     - name: Setup ccache
+      id: setup-ccache
       if: ${{ (runner.os != 'Windows' || inputs.msystem == '') && inputs.build-type == 'Debug' }}
+      continue-on-error: true
       uses: hendrikmuhs/ccache-action@v1.2.23
       with:
         variant: sccache
@@ -62,7 +64,7 @@ runs:
         key: ${{ runner.os }}-${{ runner.arch }}-${{ inputs.artifact-name }}-sccache
 
     - name: Use ccache on debug builds
-      if: ${{ inputs.build-type == 'Debug' }}
+      if: ${{ inputs.build-type == 'Debug' && ((runner.os == 'Windows' && inputs.msystem != '') || steps.setup-ccache.outcome == 'success') }}
       shell: bash
       env:
         # Only use ccache on MSYS2
