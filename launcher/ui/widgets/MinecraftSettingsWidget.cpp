@@ -64,6 +64,11 @@ MinecraftSettingsWidget::MinecraftSettingsWidget(MinecraftInstance* instance, QW
         m_ui->loaderGroup->hide();
         m_ui->countGameTime->hide();
         m_ui->latestMCVersionGroupBox->hide();
+        // These three global JVM switches live on the dedicated Performance page.
+        // Keep them visible here only for per-instance overrides.
+        m_ui->useStringDeduplication->hide();
+        m_ui->disableExplicitGC->hide();
+        m_ui->alwaysPreTouch->hide();
     } else {
         m_javaSettings = new JavaSettingsWidget(m_instance, this);
         m_ui->javaScrollArea->setWidget(m_javaSettings);
@@ -462,9 +467,11 @@ void MinecraftSettingsWidget::saveSettings()
         settings->set("UseG1GC", m_ui->useG1GC->isChecked());
         settings->set("ParallelReferenceProcessing", m_ui->parallelReferenceProcessing->isChecked());
         settings->set("GcPauseTarget", m_ui->gcPauseTarget->isChecked());
-        settings->set("UseStringDeduplication", m_ui->useStringDeduplication->isChecked());
-        settings->set("DisableExplicitGC", m_ui->disableExplicitGC->isChecked());
-        settings->set("AlwaysPreTouch", m_ui->alwaysPreTouch->isChecked());
+        if (m_instance != nullptr) {
+            settings->set("UseStringDeduplication", m_ui->useStringDeduplication->isChecked());
+            settings->set("DisableExplicitGC", m_ui->disableExplicitGC->isChecked());
+            settings->set("AlwaysPreTouch", m_ui->alwaysPreTouch->isChecked());
+        }
     } else {
         settings->reset("EnableFeralGamemode");
         settings->reset("EnableMangoHud");
@@ -473,9 +480,11 @@ void MinecraftSettingsWidget::saveSettings()
         settings->reset("UseG1GC");
         settings->reset("ParallelReferenceProcessing");
         settings->reset("GcPauseTarget");
-        settings->reset("UseStringDeduplication");
-        settings->reset("DisableExplicitGC");
-        settings->reset("AlwaysPreTouch");
+        if (m_instance != nullptr) {
+            settings->reset("UseStringDeduplication");
+            settings->reset("DisableExplicitGC");
+            settings->reset("AlwaysPreTouch");
+        }
     }
 
     // Game time
