@@ -2,6 +2,7 @@
 
 #include "Application.h"
 #include "settings/SettingsObject.h"
+#include "settings/Setting.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -38,6 +39,10 @@ PerformancePage::PerformancePage(QWidget* parent) : QWidget(parent)
     m_disableExplicitGc->setChecked(settings->get("DisableExplicitGC").toBool());
     m_alwaysPreTouch->setChecked(settings->get("AlwaysPreTouch").toBool());
     m_stringDeduplication->setEnabled(settings->get("UseG1GC").toBool());
+    auto g1gcSetting = settings->getSetting("UseG1GC");
+    connect(g1gcSetting.get(), &Setting::SettingChanged, this, [this](const Setting&, const QVariant& value) {
+        m_stringDeduplication->setEnabled(value.toBool());
+    });
 }
 
 void PerformancePage::retranslate()
