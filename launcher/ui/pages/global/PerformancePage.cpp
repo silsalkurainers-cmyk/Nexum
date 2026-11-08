@@ -48,6 +48,8 @@ PerformancePage::PerformancePage(QWidget* parent) : QWidget(parent)
 
     auto* settings = APPLICATION->settings();
     m_g1gc->setChecked(settings->get("UseG1GC").toBool());
+    m_parallelReferenceProcessing->setChecked(settings->get("ParallelReferenceProcessing").toBool());
+    m_gcPauseTarget->setChecked(settings->get("GcPauseTarget").toBool());
     m_stringDeduplication->setChecked(settings->get("UseStringDeduplication").toBool());
     m_disableExplicitGc->setChecked(settings->get("DisableExplicitGC").toBool());
     m_alwaysPreTouch->setChecked(settings->get("AlwaysPreTouch").toBool());
