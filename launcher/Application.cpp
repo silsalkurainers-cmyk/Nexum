@@ -1284,12 +1284,16 @@ bool Application::createSetupWizard()
     }();
     bool askjava = BuildConfig.JAVA_DOWNLOADER_ENABLED && !javaRequired && !settings()->get("AutomaticJavaDownload").toBool() &&
                    !settings()->get("AutomaticJavaSwitch").toBool() && !settings()->get("UserAskedAboutAutomaticJavaDownload").toBool();
+    // Show the expanded Nexum setup once to existing installations as well as fresh installs.
+    settings()->registerSetting("NexumExpandedWizardShown", false);
+    const bool expandedWizardRequired = !settings()->get("NexumExpandedWizardShown").toBool();
+
     bool languageRequired = settings()->get("Language").toString().isEmpty();
     bool pasteInterventionRequired = settings()->get("PastebinURL") != "";
     bool validWidgets = m_themeManager->isValidApplicationTheme(settings()->get("ApplicationTheme").toString());
     bool validIcons = m_themeManager->isValidIconTheme(settings()->get("IconTheme").toString());
     bool themeInterventionRequired = !validWidgets || !validIcons;
-    bool wizardRequired = javaRequired || languageRequired || pasteInterventionRequired || themeInterventionRequired || askjava;
+    bool wizardRequired = expandedWizardRequired || javaRequired || languageRequired || pasteInterventionRequired || themeInterventionRequired || askjava;
     if (wizardRequired) {
         const bool darkMode = QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark;
         // set default theme after going into theme wizard
@@ -1333,7 +1337,9 @@ bool Application::createSetupWizard()
             setupWizard.addPage(new ThemeWizardPage(&setupWizard));
         }
 
-        if (setupWizard.exec() != QDialog::Accepted) {
+        if (setupWizard.exec() == QDialog::Accepted) {
+            settings()->set("NexumExpandedWizardShown", true);
+        } else {
             qWarning() << "Setup wizard was not completed; continuing with the current settings";
         }
     }
