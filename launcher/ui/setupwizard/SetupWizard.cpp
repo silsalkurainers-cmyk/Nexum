@@ -13,8 +13,11 @@
 SetupWizard::SetupWizard(QWidget* parent) : QWizard(parent)
 {
     setObjectName(QStringLiteral("SetupWizard"));
-    resize(1360, 980);
-    setMinimumSize(1200, 880);
+    // Keep setup comfortably smaller than the main launcher and usable on
+    // ordinary laptop displays without requiring a high or portrait monitor.
+    resize(820, 620);
+    setMinimumSize(680, 500);
+    setMaximumSize(960, 760);
     setWindowIcon(APPLICATION->logo());
     setWizardStyle(QWizard::ModernStyle);
     setStyleSheet(QStringLiteral(R"(
