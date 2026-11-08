@@ -78,6 +78,7 @@ MinecraftAccountPtr MinecraftAccount::createOffline(const QString& username)
 {
     auto account = makeShared<MinecraftAccount>();
     account->data.type = AccountType::Offline;
+    account->data.accountState = AccountState::Offline;
     account->data.yggdrasilToken.token = "0";
     account->data.yggdrasilToken.validity = Validity::Certain;
     account->data.yggdrasilToken.issueInstant = QDateTime::currentDateTimeUtc();
@@ -206,6 +207,10 @@ bool MinecraftAccount::isActive() const
 
 bool MinecraftAccount::shouldRefresh() const
 {
+    // Local offline profiles never have a Microsoft/Yggdrasil session to refresh.
+    if (accountType() == AccountType::Offline) {
+        return false;
+    }
     /*
      * Never refresh accounts that are being used by the game, it breaks the game session.
      * Always refresh accounts that have not been refreshed yet during this session.
