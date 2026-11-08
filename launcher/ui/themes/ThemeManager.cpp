@@ -40,7 +40,7 @@ ThemeManager::ThemeManager()
 {
     // Use Nexum's bundled fallback icon set so missing glyphs in a selected theme
     // do not turn toolbar actions and dialogs into empty spaces.
-    QIcon::setFallbackThemeName(QStringLiteral("pe_dark"));
+    QIcon::setFallbackThemeName(QStringLiteral("multimc"));
     auto searchPaths = QIcon::themeSearchPaths();
     searchPaths.removeOne(":/icons");
     searchPaths.prepend(m_iconThemeFolder.path());
@@ -260,10 +260,10 @@ void ThemeManager::setIconTheme(const QString& requestedName)
 {
     // Nexum defaults to the modern monochrome icon set. If a saved custom
     // theme has gone missing, fall back rather than leaving actions iconless.
-    QString name = requestedName.isEmpty() ? QStringLiteral("pe_dark") : requestedName;
+    QString name = requestedName.isEmpty() ? QStringLiteral("nexum") : requestedName;
     if (!m_icons.contains(name)) {
-        themeWarningLog() << "Tried to set invalid icon theme:" << name << "- falling back to pe_dark";
-        name = QStringLiteral("pe_dark");
+        themeWarningLog() << "Tried to set invalid icon theme:" << name << "- falling back to nexum";
+        name = QStringLiteral("nexum");
     }
     if (m_icons.contains(name)) {
         QIcon::setThemeName(name);
