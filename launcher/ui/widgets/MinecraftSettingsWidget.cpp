@@ -249,6 +249,9 @@ void MinecraftSettingsWidget::loadSettings()
     m_ui->useG1GC->setChecked(settings->get("UseG1GC").toBool());
     m_ui->parallelReferenceProcessing->setChecked(settings->get("ParallelReferenceProcessing").toBool());
     m_ui->gcPauseTarget->setChecked(settings->get("GcPauseTarget").toBool());
+    m_ui->useStringDeduplication->setChecked(settings->get("UseStringDeduplication").toBool());
+    m_ui->disableExplicitGC->setChecked(settings->get("DisableExplicitGC").toBool());
+    m_ui->alwaysPreTouch->setChecked(settings->get("AlwaysPreTouch").toBool());
 
     if (m_instance != nullptr) {
         // HACK: if we change enable state of child widgets while it's unchecked this creates inconsistency
@@ -457,6 +460,9 @@ void MinecraftSettingsWidget::saveSettings()
         settings->set("UseG1GC", m_ui->useG1GC->isChecked());
         settings->set("ParallelReferenceProcessing", m_ui->parallelReferenceProcessing->isChecked());
         settings->set("GcPauseTarget", m_ui->gcPauseTarget->isChecked());
+        settings->set("UseStringDeduplication", m_ui->useStringDeduplication->isChecked());
+        settings->set("DisableExplicitGC", m_ui->disableExplicitGC->isChecked());
+        settings->set("AlwaysPreTouch", m_ui->alwaysPreTouch->isChecked());
     } else {
         settings->reset("EnableFeralGamemode");
         settings->reset("EnableMangoHud");
@@ -465,6 +471,9 @@ void MinecraftSettingsWidget::saveSettings()
         settings->reset("UseG1GC");
         settings->reset("ParallelReferenceProcessing");
         settings->reset("GcPauseTarget");
+        settings->reset("UseStringDeduplication");
+        settings->reset("DisableExplicitGC");
+        settings->reset("AlwaysPreTouch");
     }
 
     // Game time
