@@ -189,7 +189,11 @@ void AppearanceWidget::loadThemeSettings()
     for (int i = 0; i < iconThemes.count(); ++i) {
         const IconTheme* theme = iconThemes[i];
 
-        QIcon iconForComboBox = QIcon(theme->path() + "/scalable/settings");
+        QIcon iconForComboBox(theme->path() + "/scalable/settings.svg");
+        if (iconForComboBox.isNull()) {
+            iconForComboBox = QIcon::fromTheme(QStringLiteral("settings"),
+                                               QIcon(QStringLiteral(":/icons/multimc/scalable/settings.svg")));
+        }
         m_ui->iconsComboBox->addItem(iconForComboBox, theme->name(), theme->id());
 
         if (currentIconTheme == theme->id())
