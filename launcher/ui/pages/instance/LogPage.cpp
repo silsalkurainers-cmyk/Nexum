@@ -245,7 +245,7 @@ void LogPage::on_btnSave_clicked()
     }
 
     const QString path = QFileDialog::getSaveFileName(
-        this, tr("Save Minecraft Log"), QStringLiteral("nexum-minecraft.log"),
+        this, tr("Save Nexum Console Log"), QStringLiteral("nexum-minecraft.log"),
         tr("Log files (*.log);;Text files (*.txt);;All files (*)"));
     if (path.isEmpty()) {
         return;
@@ -273,14 +273,14 @@ void LogPage::on_btnPaste_clicked()
 
     // FIXME: turn this into a proper task and move the upload logic out of GuiUtil!
     m_model->append(MessageLevel::Launcher,
-                    QString("Log upload triggered at: %1").arg(QDateTime::currentDateTime().toString(Qt::RFC2822Date)));
-    auto url = GuiUtil::uploadPaste(tr("Minecraft Log"), m_model->toPlainText(), this);
+                    QString("Nexum: console upload started at %1").arg(QDateTime::currentDateTime().toString(Qt::RFC2822Date)));
+    auto url = GuiUtil::uploadPaste(tr("Nexum Console Log"), m_model->toPlainText(), this);
     if (!url) {
-        m_model->append(MessageLevel::Error, QString("Log upload failed: %1").arg(url.error()));
+        m_model->append(MessageLevel::Error, QString("Nexum: console upload failed — %1").arg(url.error()));
     } else if (!url->has_value()) {
-        m_model->append(MessageLevel::Error, QString("Log upload canceled"));
+        m_model->append(MessageLevel::Error, QString("Nexum: console upload canceled"));
     } else {
-        m_model->append(MessageLevel::Launcher, QString("Log uploaded to: %1").arg(url->value()));
+        m_model->append(MessageLevel::Launcher, QString("Nexum: console log uploaded to %1").arg(url->value()));
     }
 }
 
@@ -288,7 +288,7 @@ void LogPage::on_btnCopy_clicked()
 {
     if (!m_model)
         return;
-    m_model->append(MessageLevel::Launcher, QString("Clipboard copy at: %1").arg(QDateTime::currentDateTime().toString(Qt::RFC2822Date)));
+    m_model->append(MessageLevel::Launcher, QString("Nexum: console log copied at %1").arg(QDateTime::currentDateTime().toString(Qt::RFC2822Date)));
     GuiUtil::setClipboardText(m_model->toPlainText());
 }
 
