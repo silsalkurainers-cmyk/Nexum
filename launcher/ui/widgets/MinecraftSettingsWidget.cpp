@@ -52,6 +52,7 @@ MinecraftSettingsWidget::MinecraftSettingsWidget(MinecraftInstance* instance, QW
     : QWidget(parent), m_instance(instance), m_ui(new Ui::MinecraftSettingsWidget)
 {
     m_ui->setupUi(this);
+    connect(m_ui->useG1GC, &QCheckBox::toggled, m_ui->useStringDeduplication, &QWidget::setEnabled);
 
     if (m_instance == nullptr) {
         m_ui->settingsTabs->removeTab(1);
@@ -250,6 +251,7 @@ void MinecraftSettingsWidget::loadSettings()
     m_ui->parallelReferenceProcessing->setChecked(settings->get("ParallelReferenceProcessing").toBool());
     m_ui->gcPauseTarget->setChecked(settings->get("GcPauseTarget").toBool());
     m_ui->useStringDeduplication->setChecked(settings->get("UseStringDeduplication").toBool());
+    m_ui->useStringDeduplication->setEnabled(m_ui->useG1GC->isChecked());
     m_ui->disableExplicitGC->setChecked(settings->get("DisableExplicitGC").toBool());
     m_ui->alwaysPreTouch->setChecked(settings->get("AlwaysPreTouch").toBool());
 
