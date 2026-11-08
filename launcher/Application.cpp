@@ -75,6 +75,7 @@
 #include "ui/setupwizard/PasteWizardPage.h"
 #include "ui/setupwizard/SetupWizard.h"
 #include "ui/setupwizard/NexumWelcomeWizardPage.h"
+#include "ui/setupwizard/NexumPerformanceWizardPage.h"
 #include "ui/setupwizard/ThemeWizardPage.h"
 
 #include "ui/dialogs/CustomMessageBox.h"
@@ -1313,6 +1314,7 @@ bool Application::createSetupWizard()
 
         SetupWizard setupWizard;
         setupWizard.addPage(new NexumWelcomeWizardPage(&setupWizard));
+        setupWizard.addPage(new NexumPerformanceWizardPage(&setupWizard));
         if (languageRequired) {
             setupWizard.addPage(new LanguageWizardPage(&setupWizard));
         }
