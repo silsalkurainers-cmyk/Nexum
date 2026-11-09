@@ -1316,8 +1316,7 @@ Result<int> PrismUpdaterApp::parseReleasePage(const QByteArray* response)
         // Nexum release tags must contain a semantic version. Also tolerate
         // the older "nexum-portablev1.0.0" tag by extracting its numeric
         // version, so existing published releases remain discoverable.
-        static const QRegularExpression releaseVersionPattern(
-            QStringLiteral(R"((\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?))"));
+        static const QRegularExpression releaseVersionPattern(R"((\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?))");
         const auto versionMatch = releaseVersionPattern.match(release.tag_name);
         if (!versionMatch.hasMatch()) {
             qCWarning(taskLogC) << "Skipping GitHub release with an unrecognizable Nexum version tag:" << release.tag_name;
