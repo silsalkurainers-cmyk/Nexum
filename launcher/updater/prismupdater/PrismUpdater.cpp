@@ -774,7 +774,9 @@ void PrismUpdaterApp::performUpdate(const GitHubRelease& release)
 
     qDebug() << "will install" << selectedAsset;
     auto file = downloadAsset(selectedAsset);
+
     if (!file.exists()) {
+        showFatalErrorMessage(tr("Failed to Download"), tr("Failed to download the selected asset."));
         return;
     }
 
@@ -783,75 +785,21 @@ void PrismUpdaterApp::performUpdate(const GitHubRelease& release)
 
 QFileInfo PrismUpdaterApp::downloadAsset(const GitHubReleaseAsset& asset)
 {
-    const QUrl fileUrl(asset.browser_download_url);
-    if (!fileUrl.isValid() || fileUrl.scheme() != "https" || fileUrl.fileName().isEmpty()) {
-        showFatalErrorMessage(tr("Invalid Update Download"),
-                              tr("GitHub returned an invalid download URL for %1:\n%2")
-                                  .arg(asset.name, asset.browser_download_url));
-        return {};
-    }
+    auto tempDir = QDir::tempPath();
+    auto fileUrl = QUrl(asset.browser_download_url);
+    auto outFilePath = FS::PathCombine(tempDir, fileUrl.fileName());
 
-    // Keep update downloads on the install's data drive instead of the system
-    // temporary drive. This matters for portable installs and avoids C: space
-    // or permission problems when Nexum itself is stored elsewhere.
-    const auto updateRoot = FS::PathCombine(m_dataPath, "updates");
-    if (!FS::ensureFolderPathExists(updateRoot)) {
-        showFatalErrorMessage(tr("Update Download Failed"),
-                              tr("Could not create the update download folder:\n%1").arg(updateRoot));
-        return {};
-    }
-
-    // Give each attempt its own directory so a partial/old download can never
-    // be mistaken for a successful download with the same release asset name.
-    const auto attemptDir = FS::PathCombine(updateRoot, QUuid::createUuid().toString(QUuid::WithoutBraces));
-    if (!FS::ensureFolderPathExists(attemptDir)) {
-        showFatalErrorMessage(tr("Update Download Failed"),
-                              tr("Could not create a temporary update folder:\n%1").arg(attemptDir));
-        return {};
-    }
-
-    const auto outFilePath = FS::PathCombine(attemptDir, fileUrl.fileName());
-    qInfo() << "Downloading Nexum update asset" << asset.name << "from" << fileUrl << "to" << outFilePath;
-
+    qDebug() << "downloading" << fileUrl << "to" << outFilePath;
     auto download = Net::Request::makeFile(fileUrl, outFilePath);
     download->setNetwork(m_network.get());
-
-    ProgressDialog progressDialog;
-    progressDialog.setWindowTitle(tr("Downloading Nexum update"));
+    auto progressDialog = ProgressDialog();
     progressDialog.adjustSize();
+
     progressDialog.execWithTask(download.get());
 
-    if (!download->wasSuccessful()) {
-        auto reason = download->failReason();
-        if (reason.isEmpty()) {
-            reason = download->errorString();
-        }
-        if (reason.isEmpty()) {
-            reason = tr("The download task ended without a successful result.");
-        }
-        qCritical() << "Nexum update asset download failed:" << asset.name << reason
-                    << "HTTP status:" << download->replyStatusCode()
-                    << "network error:" << download->error()
-                    << "URL:" << download->url();
-        FS::deletePath(attemptDir);
-        showFatalErrorMessage(tr("Update Download Failed"),
-                              tr("Could not download %1.\n\nReason: %2\n\nURL: %3")
-                                  .arg(asset.name, reason, asset.browser_download_url));
-        return {};
-    }
+    qDebug() << "download complete";
 
-    const QFileInfo outFile(outFilePath);
-    if (!outFile.isFile() || outFile.size() <= 0) {
-        qCritical() << "Nexum update download reported success but produced no file:" << outFilePath;
-        FS::deletePath(attemptDir);
-        showFatalErrorMessage(tr("Update Download Failed"),
-                              tr("The download finished but the update file is missing or empty:\n%1")
-                                  .arg(outFilePath));
-        return {};
-    }
-
-    qInfo() << "Nexum update asset downloaded successfully:" << outFile.absoluteFilePath()
-            << "size:" << outFile.size();
+    QFileInfo outFile(outFilePath);
     return outFile;
 }
 
@@ -1312,17 +1260,7 @@ Result<int> PrismUpdaterApp::parseReleasePage(const QByteArray* response)
         TRY_INTO(release.draft, Json::requireBoolean(obj, "draft"))
         TRY_INTO(release.prerelease, Json::requireBoolean(obj, "prerelease"))
         release.body = obj["body"].toString();
-
-        // Nexum release tags must contain a semantic version. Also tolerate
-        // the older "nexum-portablev1.0.0" tag by extracting its numeric
-        // version, so existing published releases remain discoverable.
-        static const QRegularExpression releaseVersionPattern(R"((\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?))");
-        const auto versionMatch = releaseVersionPattern.match(release.tag_name);
-        if (!versionMatch.hasMatch()) {
-            qCWarning(taskLogC) << "Skipping GitHub release with an unrecognizable Nexum version tag:" << release.tag_name;
-            continue;
-        }
-        release.version = Version(versionMatch.captured(1));
+        release.version = Version(release.tag_name);
 
         TRY_INTO(const auto& releaseAssetsObj, Json::requireArray(obj, "assets"))
         for (auto assetJson : releaseAssetsObj) {

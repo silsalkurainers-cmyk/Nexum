@@ -48,9 +48,8 @@ jobs:
       - name: Grab and store version
         run: |
           VERSION="${{ inputs.release_tag || github.ref_name }}"
-          if [[ ! "$VERSION" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+([.-][A-Za-z0-9.-]+)?$ ]]; then
+          if [[ ! "$VERSION" =~ ^[A-Za-z0-9._-]+$ ]]; then
             echo "Invalid release tag: $VERSION"
-            echo "Use a semantic version such as v1.0.0 or 1.0.0."
             exit 1
           fi
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
