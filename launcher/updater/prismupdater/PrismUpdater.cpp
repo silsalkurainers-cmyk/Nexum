@@ -1293,7 +1293,7 @@ Result<int> PrismUpdaterApp::parseReleasePage(const QByteArray* response)
         // Nexum's first published tag used the legacy "nexum-portablev" prefix.
         // Parse the semantic version portion so prefixed and normal vX.Y.Z tags
         // compare consistently with the version embedded in the running launcher.
-        static const QRegularExpression releaseVersionPattern(R"((\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?))");
+        static const QRegularExpression releaseVersionPattern(R"((\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?))");
         const auto versionMatch = releaseVersionPattern.match(release.tag_name);
         release.version = Version(versionMatch.hasMatch() ? versionMatch.captured(1) : release.tag_name);
 
