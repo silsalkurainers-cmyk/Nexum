@@ -69,6 +69,7 @@
 #include <QProgressDialog>
 #include <QShortcut>
 #include <QStatusBar>
+#include <QStorageInfo>
 #include <QTextEdit>
 #include <QToolBar>
 #include <QToolButton>
@@ -225,6 +226,86 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWi
         exportInstanceMenu->addAction(ui->actionExportInstanceMrPack);
         exportInstanceMenu->addAction(ui->actionExportInstanceFlamePack);
         ui->actionExportInstance->setMenu(exportInstanceMenu);
+
+        // Nexum identity: keep the familiar launcher workflow, but give the toolbar
+        // a distinct Nexum-branded control layout.
+        auto* brandLabel = new QLabel(QStringLiteral("NEXUM"), ui->mainToolBar);
+        brandLabel->setObjectName(QStringLiteral("nexumBrandLabel"));
+        brandLabel->setStyleSheet(QStringLiteral("font-weight: 700; font-size: 13px; padding: 0 10px;"));
+        ui->mainToolBar->insertWidget(ui->actionAddInstance, brandLabel);
+
+        auto* performanceMenu = new QMenu(this);
+        auto* openPerformanceSettings = performanceMenu->addAction(tr("Performance settings..."));
+        openPerformanceSettings->setToolTip(tr("Configure the Java runtime performance options."));
+        connect(openPerformanceSettings, &QAction::triggered, this,
+                [this] { APPLICATION->ShowGlobalSettings(this, QStringLiteral("performance-settings")); });
+
+        auto* performanceButton = new QToolButton(ui->mainToolBar);
+        performanceButton->setObjectName(QStringLiteral("nexumPerformanceButton"));
+        performanceButton->setText(tr("Performance"));
+        performanceButton->setIcon(QIcon::fromTheme(QStringLiteral("preferences-system-performance")));
+        performanceButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        performanceButton->setPopupMode(QToolButton::InstantPopup);
+        performanceButton->setMenu(performanceMenu);
+        ui->mainToolBar->insertWidget(ui->actionSettings, performanceButton);
+
+        auto* toolsMenu = new QMenu(this);
+        auto* healthCheckAction = toolsMenu->addAction(tr("Instance Health Check"));
+        healthCheckAction->setToolTip(tr("Check the selected instance's folders, launch state, and available storage."));
+        connect(healthCheckAction, &QAction::triggered, this, [this] {
+            if (!m_selectedInstance) {
+                QMessageBox::information(this, tr("Instance Health Check"), tr("Select an instance first."));
+                return;
+            }
+
+            const QString rootPath = m_selectedInstance->instanceRoot();
+            const QString gamePath = m_selectedInstance->gameRoot();
+            const QString modsPath = m_selectedInstance->modsRoot();
+            const QFileInfo rootInfo(rootPath);
+            const QFileInfo gameInfo(gamePath);
+            const QFileInfo modsInfo(modsPath);
+
+            QStringList report;
+            report << tr("Instance: %1").arg(m_selectedInstance->name());
+            report << QString();
+            report << tr("Instance folder: %1").arg(rootInfo.isDir() ? tr("OK") : tr("MISSING"));
+            report << tr("Game data folder: %1").arg(gameInfo.isDir() ? tr("OK") : tr("MISSING"));
+            report << tr("Mods folder: %1").arg(modsInfo.isDir() ? tr("Present") : tr("Not created yet (normal for an unmodded instance)"));
+            report << tr("Version metadata: %1").arg(m_selectedInstance->hasVersionBroken() ? tr("Needs attention") : tr("No known issue"));
+            report << tr("Launch readiness: %1").arg(m_selectedInstance->canLaunch() ? tr("Ready") : tr("Cannot currently launch"));
+            report << tr("Runtime state: %1").arg(m_selectedInstance->isRunning() ? tr("Running") : tr("Not running"));
+            if (m_selectedInstance->hasCrashed()) {
+                report << tr("Previous run: Nexum recorded an abnormal exit.");
+            }
+
+            QStorageInfo storage(rootPath);
+            if (storage.isValid() && storage.isReady()) {
+                const qint64 freeBytes = storage.bytesAvailable();
+                const double freeGiB = static_cast<double>(freeBytes) / (1024.0 * 1024.0 * 1024.0);
+                report << tr("Free space on instance drive: %1 GiB %2")
+                              .arg(QString::number(freeGiB, 'f', 1))
+                              .arg(freeBytes < 1024LL * 1024LL * 1024LL ? tr("(low)") : tr("(OK)"));
+            }
+
+            report << QString();
+            report << tr("This check only reports findings; it does not change your instance.");
+            QMessageBox box(QMessageBox::Information, tr("Nexum Instance Health Check"), report.join(QLatin1Char('\n')),
+                            QMessageBox::Ok, this);
+            box.setTextFormat(Qt::PlainText);
+            box.exec();
+        });
+
+        toolsMenu->addSeparator();
+        toolsMenu->addAction(ui->actionViewLog);
+
+        auto* toolsButton = new QToolButton(ui->mainToolBar);
+        toolsButton->setObjectName(QStringLiteral("nexumToolsButton"));
+        toolsButton->setText(tr("Tools"));
+        toolsButton->setIcon(QIcon::fromTheme(QStringLiteral("applications-system")));
+        toolsButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        toolsButton->setPopupMode(QToolButton::InstantPopup);
+        toolsButton->setMenu(toolsMenu);
+        ui->mainToolBar->insertWidget(ui->actionHelpButton, toolsButton);
     }
 
     // hide, disable and show stuff

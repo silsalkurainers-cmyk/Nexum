@@ -89,6 +89,33 @@ QString DarkTheme::appStyleSheet()
             selection-background-color: #bdbdbd;
             selection-color: #050505;
         }
+        QToolBar {
+            background: #080808;
+            border: none;
+            border-bottom: 1px solid #252525;
+            spacing: 7px;
+            padding: 5px 8px;
+        }
+        QToolBar::separator {
+            background: #303030;
+            width: 1px;
+            margin: 4px 5px;
+        }
+        QToolBar QToolButton {
+            color: #e8e8e8;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 7px 10px;
+        }
+        QToolBar QToolButton:hover {
+            background: #191919;
+            border-color: #343434;
+        }
+        QToolBar QToolButton:pressed, QToolBar QToolButton:checked {
+            background: #242424;
+            border-color: #4a4a4a;
+        }
         QToolTip {
             color: #f0f0f0;
             background-color: #080808;
