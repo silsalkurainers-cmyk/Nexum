@@ -205,6 +205,73 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-private-key-id: ${{ secrets.GPG_PRIVATE_KEY_ID }}
 
+
+  freebsd:
+    name: Build (FreeBSD)
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    env:
+      BUILD_TYPE: ${{ inputs.build-type || 'Release' }}
+      LAUNCHER_VERSION: ${{ github.sha }}
+      ARTIFACT_NAME: FreeBSD-Qt6
+      BUILD_PLATFORM: official
+      VCPKG_FORCE_SYSTEM_BINARIES: 1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      - name: Restore required source dependencies
+        shell: bash
+        run: |
+          mkdir -p cmake libraries
+          git clone --depth 1 https://github.com/microsoft/vcpkg.git cmake/vcpkg
+          git clone --depth 1 https://github.com/PrismLauncher/libnbtplusplus.git libraries/libnbtplusplus
+
+      - name: Build and test in FreeBSD 15.1
+        id: freebsd-build
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "15.1"
+          arch: x86_64
+          sync: rsync
+          prepare: |
+            pkg install -y cmake ninja pkgconf qt6-base qt6-svg qt6-imageformats qt6-networkauth extra-cmake-modules scdoc git curl zip unzip python3
+          run: |
+            set -eu
+            export ARTIFACT_NAME="FreeBSD-Qt6"
+            export BUILD_PLATFORM="official"
+            export BUILD_TYPE="${{ env.BUILD_TYPE }}"
+            export LAUNCHER_VERSION="${{ env.LAUNCHER_VERSION }}"
+            export VCPKG_FORCE_SYSTEM_BINARIES=1
+            export VCPKG_DEFAULT_TRIPLET=x64-freebsd
+            export Qt6_DIR=/usr/local/lib/cmake/Qt6
+
+            ./cmake/vcpkg/bootstrap-vcpkg.sh -disableMetrics
+            cmake --preset ci \
+              -D CMAKE_MAKE_PROGRAM="$(command -v ninja)" \
+              -D CMAKE_PREFIX_PATH=/usr/local \
+              -D Qt6_DIR="$Qt6_DIR" \
+              -D VCPKG_HOST_TRIPLET=x64-freebsd \
+              -D VCPKG_TARGET_TRIPLET=x64-freebsd \
+              -D Launcher_VERSION_OVERRIDE="$LAUNCHER_VERSION"
+            cmake --build --preset ci --config "$BUILD_TYPE"
+            ctest --preset ci --build-config "$BUILD_TYPE"
+            cmake --install build --config "$BUILD_TYPE" --prefix install-freebsd
+            cmake --install build --config "$BUILD_TYPE" --prefix install-freebsd --component portable
+            tar -czf "Nexum-FreeBSD-x86_64-Qt6-Portable-$LAUNCHER_VERSION.tar.gz" -C install-freebsd .
+
+      - name: Upload FreeBSD portable package
+        uses: actions/upload-artifact@v7
+        with:
+          name: Nexum-FreeBSD-x86_64-Qt6-Portable-${{ github.sha }}-${{ env.BUILD_TYPE }}
+          path: Nexum-FreeBSD-x86_64-Qt6-Portable-${{ github.sha }}.tar.gz
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Package (macOS)
         if: ${{ runner.os == 'macOS' }}
         uses: ./.github/actions/package/macos
