@@ -58,6 +58,16 @@ jobs:
             artifact-name: Linux-aarch64
             qt-version: 6.11.2
 
+          # ChromeOS runs desktop Linux apps through Crostini.
+          # These are dedicated Chromebook-targeted artifacts, not native ChromeOS apps.
+          - os: ubuntu-24.04
+            artifact-name: ChromeOS-x86_64
+            qt-version: 6.11.2
+
+          - os: ubuntu-24.04-arm
+            artifact-name: ChromeOS-ARM64
+            qt-version: 6.11.2
+
           - os: windows-2022
             artifact-name: Windows-MinGW-w64
             msystem: CLANG64
