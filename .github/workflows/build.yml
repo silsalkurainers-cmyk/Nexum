@@ -239,7 +239,7 @@ jobs:
           arch: x86_64
           sync: rsync
           prepare: |
-            pkg install -y cmake ninja pkgconf qt6-base qt6-svg qt6-imageformats qt6-networkauth extra-cmake-modules scdoc git curl zip unzip python3
+            pkg install -y cmake ninja pkgconf qt6-base qt6-svg qt6-imageformats qt6-networkauth kf6-extra-cmake-modules scdoc git curl zip unzip python3
           run: |
             set -eu
             export ARTIFACT_NAME="FreeBSD-Qt6"
