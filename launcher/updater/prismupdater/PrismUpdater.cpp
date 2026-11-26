@@ -31,7 +31,6 @@
 #include <QAccessible>
 #include <QCommandLineParser>
 #include <QDirListing>
-#include <QFile>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QNetworkProxy>
@@ -786,50 +785,21 @@ void PrismUpdaterApp::performUpdate(const GitHubRelease& release)
 
 QFileInfo PrismUpdaterApp::downloadAsset(const GitHubReleaseAsset& asset)
 {
-    const QUrl fileUrl(asset.browser_download_url);
-    const QString fileName = fileUrl.fileName();
-    if (!fileUrl.isValid() || fileUrl.scheme() != QStringLiteral("https") || fileName.isEmpty()) {
-        qWarning() << "Nexum updater rejected an invalid release asset URL:" << asset.browser_download_url;
-        return {};
-    }
+    auto tempDir = QDir::tempPath();
+    auto fileUrl = QUrl(asset.browser_download_url);
+    auto outFilePath = FS::PathCombine(tempDir, fileUrl.fileName());
 
-    // Use a unique temporary path so an earlier partial download can never be
-    // mistaken for a successful update package.
-    const QString outFilePath =
-        QDir(QDir::tempPath()).filePath(QStringLiteral("nexum-update-%1-%2")
-                                            .arg(QUuid::createUuid().toString(QUuid::WithoutBraces), fileName));
-    QFile::remove(outFilePath);
-
-    qInfo() << "Nexum updater downloading" << fileUrl << "to" << outFilePath;
+    qDebug() << "downloading" << fileUrl << "to" << outFilePath;
     auto download = Net::Request::makeFile(fileUrl, outFilePath);
     download->setNetwork(m_network.get());
-    download->enableAutoRetry(true);
-
     auto progressDialog = ProgressDialog();
     progressDialog.adjustSize();
+
     progressDialog.execWithTask(download.get());
 
-    if (!download->wasSuccessful()) {
-        qWarning() << "Nexum updater asset download failed:"
-                   << asset.name
-                   << "reason:" << download->failReason()
-                   << "network error:" << download->errorString()
-                   << "HTTP status:" << download->replyStatusCode();
-        QFile::remove(outFilePath);
-        return {};
-    }
+    qDebug() << "download complete";
 
-    const QFileInfo outFile(outFilePath);
-    if (!outFile.isFile() || outFile.size() <= 0 || (asset.size > 0 && outFile.size() != asset.size)) {
-        qWarning() << "Nexum updater rejected an incomplete asset:"
-                   << asset.name
-                   << "expected bytes:" << asset.size
-                   << "received bytes:" << outFile.size();
-        QFile::remove(outFilePath);
-        return {};
-    }
-
-    qInfo() << "Nexum updater verified downloaded asset:" << asset.name << outFile.size() << "bytes";
+    QFileInfo outFile(outFilePath);
     return outFile;
 }
 
@@ -1290,12 +1260,7 @@ Result<int> PrismUpdaterApp::parseReleasePage(const QByteArray* response)
         TRY_INTO(release.draft, Json::requireBoolean(obj, "draft"))
         TRY_INTO(release.prerelease, Json::requireBoolean(obj, "prerelease"))
         release.body = obj["body"].toString();
-        // Nexum's first published tag used the legacy "nexum-portablev" prefix.
-        // Parse the semantic version portion so prefixed and normal vX.Y.Z tags
-        // compare consistently with the version embedded in the running launcher.
-        static const QRegularExpression releaseVersionPattern(R"((\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?))");
-        const auto versionMatch = releaseVersionPattern.match(release.tag_name);
-        release.version = Version(versionMatch.hasMatch() ? versionMatch.captured(1) : release.tag_name);
+        release.version = Version(release.tag_name);
 
         TRY_INTO(const auto& releaseAssetsObj, Json::requireArray(obj, "assets"))
         for (auto assetJson : releaseAssetsObj) {
